@@ -1,20 +1,15 @@
 <%@ page import="java.sql.PreparedStatement" %>
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="java.sql.Connection" %>
+<%@ page import="static java.sql.JDBCType.NULL" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="../basedados/basedados.h" %>
 <%
 
-String sql ="SELECT * FROM livro";
-PreparedStatement psSql =conn.prepareStatement(sql);
-ResultSet rsSql=psSql.executeQuery();
+String user = (String) session.getAttribute("username");
+int tipo = (Integer) session.getAttribute("tipo_utilizador");
 
-
-
-
-
-
-
+out.println(user);
 %>
 
 <!DOCTYPE html>
@@ -95,24 +90,20 @@ ResultSet rsSql=psSql.executeQuery();
                 <a class="nav-link" href="team.html">Team</a>
               </li>
 
-                <?php
-                if(isset($_SESSION["user"])){
-                    echo '
-                                <li class="nav-item">
-                                    <a class="nav-link" href="perfil.php">Perfil-'.$_SESSION["user"].'</a>
-                                </li>
-                             ';
+                <%
+                if(user != null){
+                    out.println("<li class='nav-item'><a class='nav-link' href='perfil.php'>Perfil-"+user+"</a></li>");
                 }
-                ?>
+                %>
 
               <li class="nav-item">
-                  <?php
-                    if(isset($_SESSION["user"])){
-                        echo '<a class="nav-link" href="logout.php"> <i class="fa fa-user" aria-hidden="true"></i> Logout</a>';
-                    }else{
-                        echo '<a class="nav-link" href="login.html"> <i class="fa fa-user" aria-hidden="true"></i> Login</a>';
-                    }
-                  ?>
+                <%
+                  if(user != null){
+                    out.println("<a class='nav-link' href='logout.jsp'><i class='fa fa-user' aria-hidden='true'></i> Logout</a>");
+                  }else{
+                    out.println("<a class='nav-link' href='login.html'><i class='fa fa-user' aria-hidden='true'></i> Login</a>");
+                  }
+                %>
               </li>
               <form class="form-inline">
                 <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
@@ -398,7 +389,13 @@ ResultSet rsSql=psSql.executeQuery();
 </body>
 
 </html>
+<%
 
-<?php
 
-mysqli_close($conn);
+%>
+
+
+
+<%
+  conn.close();
+%>
