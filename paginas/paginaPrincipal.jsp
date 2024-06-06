@@ -1,7 +1,5 @@
 <%@ page import="java.sql.PreparedStatement" %>
 <%@ page import="java.sql.ResultSet" %>
-<%@ page import="java.sql.Connection" %>
-<%@ page import="static java.sql.JDBCType.NULL" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="../basedados/basedados.h" %>
 <%
@@ -9,7 +7,6 @@
 String user = (String) session.getAttribute("username");
 int tipo = (Integer) session.getAttribute("tipo_utilizador");
 
-out.println(user);
 %>
 
 <!DOCTYPE html>
@@ -176,32 +173,53 @@ out.println(user);
           </p>
         </div>
 
-          <?php
-            $sql = "SELECT *, COUNT(*) as total FROM curso";
-            $result = mysqli_query($conn, $sql);
-            $count = 0;
+        <%
+          String cursos = "SELECT * FROM curso";
+          PreparedStatement psSql = conn.prepareStatement(cursos);
+          ResultSet rsSql = psSql.executeQuery();
 
-            if(mysqli_num_rows($result)>0) {
-                $row = mysqli_fetch_assoc($result);
+          int count = 3;
+          while(rsSql.next()){
 
-                for ($i = 3; $i < $row["total"] + 3; $i++) {
-                    if ($i % 3 == 0) {
-                        echo '<div class="row">';
-                    }
-                    $curso = $cursos[$count];
-                    echo printCursos($curso, ($i%3)+1, isset($_SESSION["user"]));
-                    if ($i % 3 == 2) {
-                        echo '</div>';
-                    }
-                    $count++;
-                }
+            String nome = rsSql.getString("nome");
+            String descricao = rsSql.getString("descricao");
+            int id = rsSql.getInt("id_curso");
+            String verf = user == null? "<a href='./login.html'> Inicie sessão para se inscrever no nosso curso!</a>":
+                    "<a href='./inscricaoCurso.jsp?id="+id+"'>Inscreva-se</a>";
 
 
+            if(count%3==0){
+              out.println("<div class='row'>");
             }
-                  ?>
-              </div>
+        %>
+
+        <div class="col-md-4 ">
+          <div class="box ">
+            <div class="img-box">
+              <%out.println("<img src='s"+((count%3)+1)+".png' alt=''>");%>
+            </div>
+            <div class="detail-box">
+
+              <h5>
+                <%out.println(nome);%>
+              </h5>
+              <p>
+                <%out.println(descricao);%>
+              </p>
+              <%out.println(verf);%>
             </div>
           </div>
+        </div>
+
+        <%
+            if(count%3==2){
+              out.println("</div>");
+            }
+            count++;
+          }
+        %>
+
+
 
       </div>
     </div>
