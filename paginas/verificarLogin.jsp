@@ -7,21 +7,15 @@
     String user = request.getParameter("user");
     String pass = request.getParameter("pass");
 
-    out.println(user+"<br>");
-    out.println(pass+"<br>");
 
-    String sql = "SELECT * FROM utilizador WHERE username = ? AND password = ?";
-    PreparedStatement psSql = conn.prepareStatement(sql);
-    psSql.setString(1, user);
-    psSql.setString(2, pass);
-    ResultSet rsSql = psSql.executeQuery();
+    sql = "SELECT * FROM utilizador WHERE username = '"+user+"' AND password = '"+pass+"';";
+    psSql = conn.prepareStatement(sql);
+    rsSql = psSql.executeQuery();
 
-    out.println("query");
 
     if(rsSql.next()) {
         out.println("entrou");
         if(rsSql.getInt("tipo_utilizador")!=1){
-            out.println("entrou");
             session.setAttribute("username", user);
             session.setAttribute("tipo_utilizador", rsSql.getInt("tipo_utilizador"));
             out.println("<script>window.alert('Fez Login!'); window.location.href = './paginaPrincipal.jsp'</script>");

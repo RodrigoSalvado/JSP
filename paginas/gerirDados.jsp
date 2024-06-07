@@ -1,44 +1,81 @@
-<%@ page import="java.sql.PreparedStatement" %>
+        <%@ page import="java.sql.PreparedStatement" %>
 <%@ page import="java.sql.ResultSet" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="../basedados/basedados.h" %>
 <%
     String user = (String) session.getAttribute("username");
-    int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
+    int tipo = session.getAttribute("tipo_utilizador") == null ? 0 : (Integer) session.getAttribute("tipo_utilizador");
 
-    if(tipo == 1 || tipo == 0 ){
+    if (tipo == 1 || tipo == 0) {
         out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
     }
 
 
+    int utilizador = request.getParameter("utilizador") == null ? 0 : 1;
+    int curso = request.getParameter("curso") == null ? 0 : 1;
 
-        sql = "SELECT * FROM utilizador WHERE username = '"+ user + "'";
+
+    int utilizadorAlterar = request.getParameter("id_utilizador") == null ? 0 : Integer.parseInt(request.getParameter("id_utilizador"));
+    int cursoAlterar = request.getParameter("id_curso") == null ? 0 : Integer.parseInt(request.getParameter("id_curso"));
+
+
+    String username = null;
+    String email = null;
+    String password = null;
+    int tipo_utilizador = 0;
+    String cargo=null;
+
+
+    if (utilizador == 1) {
+        sql = "SELECT * FROM utilizador WHERE id_utilizador = '" + utilizadorAlterar + "'";
         psSql = conn.prepareStatement(sql);
         rsSql = psSql.executeQuery();
 
         rsSql.next();
 
-        int id = rsSql.getInt("id_utilizador");
+        username = rsSql.getString("username");
+        email = rsSql.getString("email");
+        password = rsSql.getString("password");
+        tipo_utilizador = rsSql.getInt("tipo_utilizador");
 
-        String cargo = "";
-
-        switch(tipo){
+        switch(tipo_utilizador){
             case 2:
-                cargo+= "Aluno";
+                cargo= "Aluno";
                 break;
             case 3:
-                cargo+= "Docente";
+                cargo= "Docente";
                 break;
             case 4:
-                cargo+= "Administrador";
+                cargo= "Administrador";
                 break;
             default:
-                cargo+= "Desconhecido";
+                cargo= "Desconhecido";
                 break;
         }
+    }
+
+    if (curso == 1) {
+        sql = "SELECT * FROM curso WHERE id_curso = '" + cursoAlterar + "'";
+        psSql = conn.prepareStatement(sql);
+        rsSql = psSql.executeQuery();
+
+        rsSql.next();
+
+        String nome = rsSql.getString("nome");
+        String docente = rsSql.getString("docente");
+        String descricao = rsSql.getString("descricao");
+        int max_num = rsSql.getInt("max_num");
+
+        sql = "SELECT COUNT(*) as inscritos FROM util_curso WHERE id_curso = '" + cursoAlterar + "'";
+        psSql = conn.prepareStatement(sql);
+        rsSql = psSql.executeQuery();
+        rsSql.next();
+
+        int inscritos = rsSql.getInt("inscritos");
+    }
+
 
 %>
-
 
 <!DOCTYPE html>
 <html>
@@ -90,7 +127,7 @@
     <header class="header_section">
         <div class="container-fluid">
             <nav class="navbar navbar-expand-lg custom_nav-container ">
-                <a class="navbar-brand" href="paginaPrincipal.jsp">
+                <a class="navbar-brand" href="paginaPrincipal.php">
             <span>
               Crypto Academy
             </span>
@@ -119,16 +156,16 @@
                         </li>
 
                         <%
-                            if(user != null){
-                                out.println("<li class='nav-item'><a class='nav-link' href='perfil.jsp'>Perfil-"+user+"</a></li>");
+                            if (user != null) {
+                                out.println("<li class='nav-item'><a class='nav-link' href='perfil.jsp'>Perfil-" + user + "</a></li>");
                             }
                         %>
 
                         <li class="nav-item">
                             <%
-                                if(user != null){
+                                if (user != null) {
                                     out.println("<a class='nav-link' href='logout.jsp'><i class='fa fa-user' aria-hidden='true'></i> Logout</a>");
-                                }else{
+                                } else {
                                     out.println("<a class='nav-link' href='login.html'><i class='fa fa-user' aria-hidden='true'></i> Login</a>");
                                 }
                             %>
@@ -146,68 +183,74 @@
     <!-- end header section -->
 </div>
 
+<!-- alterar dados -->
 
-<!-- service section -->
+<%
 
+if(utilizador == 1){
 
-    <div class="heading_container heading_center" style="margin-top: 80px">
-        <h2>
-            Perfil <span><%= cargo%></span>
-        </h2>
-        <div class="area">
-            <%
-                //admin
-                if(tipo == 4){
-
-
-                        out.println("<div class=\"botoes\">" +
-                                        "<a href='gerirDados.jsp?utilizador=1&id_utilizador="+id+"'>" +
-                                            "<button>Gerir dados pessoais</button><br>\n" +
-                                        "</a>\n" +
-                                        "<a href=\"gestaoUtilizadores.jsp\">\n" +
-                                            "<button>Gerir utilizadores</button><br>\n" +
-                                        "</a>\n" +
-                                        "<a href=\"gestaoInscricoes.jsp\">\n" +
-                                            "<button>Gerir inscrições</button><br>\n" +
-                                        "</a>\n" +
-                                        "<a href=\"gestaoCursos.jsp\">\n" +
-                                            "<button>Gerir Cursos</button><br>\n" +
-                                        "</a>\n" +
-                                    "</div>");
+    sql = "SELECT * FROM tipo_utilizador";
+    psSql = conn.prepareStatement(sql);
+    rsSql = psSql.executeQuery();
 
 
 
-                }//docente
-                if (tipo == 3){
-                    out.println("<div class=\"botoes\">" +
-                                    "<a href='gerirDados.jsp?utilizador=1&id_utilizador="+id+"'>" +
-                                        "<button>Gerir dados pessoais</button><br>\n" +
-                                    "</a>\n" +
-                                    "<a href=\"gestaoInscricoes.jsp\">\n" +
-                                        "<button>Gerir inscrições</button><br>\n" +
-                                    "</a>\n" +
-                                    "<a href=\"gestaoCursos.jsp\">\n" +
-                                        "<button>Gerir Cursos</button><br>\n" +
-                                    "</a>\n" +
-                                "</div>");
-                }//aluno
-                if (tipo == 2){
-                    out.println("<div class='botoes'>" +
-                                    "<a href='gerirDados.jsp?utilizador=1&id_utilizador="+id+"'>" +
-                                        "<button>Gerir dados pessoais</button><br>" +
-                                    "</a>" +
-                                    "<a href='gestaoCursos.jsp'>" +
-                                        "<button>Gerir Cursos Inscritos</button><br>" +
-                                    "</a>" +
-                                "</div>");
-                }%>
+    out.println("<div class=\"container-inscricao\">\n" +
+            "            <div class=\"informacoes\">\n" +
+            "                <form action=\"alterar.jsp?utilizador=" + utilizador + "\" method=\"post\" >\n" +
+            "                    <input type=\"hidden\" name=\"nomeUser\" value=\"'" + utilizadorAlterar + "'\">\n" +
+            "                    <br>\n" +
+            "                    <h3>Alterar informações pessoais</h3>\n" +
+            "                    <br><br>\n" +
+            "                    <label>Username:  " + username + " </label>\n" +
+            "                    <br>\n" +
+            "                    <input type=\"text\" name=\"username\" placeholder=\"Novo username\" class=\"inp\">\n" +
+            "                    <br><br>\n" +
+            "                    <label>Email: " + email + "</label>\n" +
+            "                    <br>\n" +
+            "                    <input type=\"email\" name=\"email\" placeholder=\"Novo email\"  class=\"inp\">\n");
+
+            if(tipo == 4){
+                out.println("                    <br><br>\n" +
+                            "                    <label>Tipo Utilizador: " + cargo + "</label>\n" +
+                            "                    <br>\n" +
+                            "                    <select name=\"tipo_utilizador\" class=\"inp\">" +
+                            "                       <option value=\""+tipo_utilizador+"\">"+cargo+"</option>");
+
+                while(rsSql.next()){
+                    if(rsSql.getInt("id") != tipo_utilizador && rsSql.getInt("id")!= 5){
+                        out.println("<option value=\""+rsSql.getInt("id")+"\">"+rsSql.getString("cargo")+"</option>");
+                    }
+                }
+                out.println("</select>");
+            }
 
 
-        </div>
-    </div>
 
 
-<!-- end service section -->
+
+
+    out.println(
+            "                    <br><br>\n" +
+            "                    <label>Password: " + password + " </label>\n" +
+            "                    <br>\n" +
+            "                    <input type=\"text\" name=\"pass\" placeholder=\"Nova password\"   class=\"inp\">\n" +
+            "                    <br><br><br>\n" +
+            "                    <input type=\"submit\" value=\"Alterar dados\" name=\"botao\">\n" +
+            "                    <br><br>\n" +
+            "                </form>\n" +
+            "            </div>\n" +
+            "        </div>");
+
+}
+
+
+
+%>
+
+
+
+
 
 <!-- info section -->
 
@@ -271,13 +314,13 @@
                         Links
                     </h4>
                     <div class="info_links">
-                        <a class="active" href="paginaPrincipal.jsp">
+                        <a class="active" href="paginaPrincipal.php">
                             Home
                         </a>
                         <a class="" href="about.html">
                             About
                         </a>
-                        <a class="" href="cursos.jsp">
+                        <a class="" href="cursos.php">
                             Services
                         </a>
                         <a class="" href="why.html">
@@ -307,7 +350,6 @@
 <!-- end info section -->
 
 
-
 <!-- jQery -->
 <script type="text/javascript" src="jquery-3.4.1.min.js"></script>
 <!-- popper js -->
@@ -328,8 +370,6 @@
 </body>
 
 </html>
-
 <%
-
 conn.close();
 %>
