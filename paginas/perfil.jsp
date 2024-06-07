@@ -1,44 +1,44 @@
-<?php
+<%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="../basedados/basedados.h" %>
+<%
+    String user = (String) session.getAttribute("username");
+    int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
-include "../basedados/basedados.h";
-include "./ConstUtilizadores.php";
-global $conn;
-
-session_start();
-
-$tipoUser = $_SESSION["tipo"];
-$user = $_SESSION["user"];
-
-if($tipoUser == CLIENTE || empty($tipoUser)){
-    echo "<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.php';</script>";
-}
-
-$sql = "SELECT id_utilizador FROM utilizador WHERE username = '$user'";
-$result = mysqli_query($conn, $sql);
-
-if($result){
-    if(mysqli_num_rows($result) > 0){
-        $row = mysqli_fetch_assoc($result);
-        $id_utilizador = $row["id_utilizador"];
+    if(tipo == 1 || tipo == 0 ){
+        out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
     }
-}
 
+    try{
 
-$sql = "SELECT cargo FROM tipo_utilizador WHERE id = '$tipoUser'";
-$result = mysqli_query($conn, $sql);
+        String sql = "SELECT * FROM utilizador WHERE username = '"+ user + "'";
+        PreparedStatement psSql = conn.prepareStatement(sql);
+        ResultSet rsSql = psSql.executeQuery();
 
-if($result){
-    if(mysqli_num_rows($result) > 0){
-        $row = mysqli_fetch_assoc($result);
-        $cargo = $row["cargo"];
-    }
-}
+        rsSql.next();
 
+        int id = rsSql.getInt("id_utilizador");
 
+        String cargo = "";
 
+        switch(tipo){
+            case 2:
+                cargo+= "Aluno";
+                break;
+            case 3:
+                cargo+= "Docente";
+                break;
+            case 4:
+                cargo+= "Administrador";
+                break;
+            default:
+                cargo+= "Desconhecido";
+                break;
+        }
 
+%>
 
-?>
 
 <!DOCTYPE html>
 <html>
@@ -102,14 +102,14 @@ if($result){
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav  ">
-                        <li class="nav-item ">
-                            <a class="nav-link" href="paginaPrincipal.php">Home </a>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="paginaPrincipal.jsp">Home <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="about.html"> About</a>
                         </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" href="cursos.php">Services  </a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="cursos.jsp">Cursos</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="why.html">Why Us</a>
@@ -117,25 +117,22 @@ if($result){
                         <li class="nav-item">
                             <a class="nav-link" href="team.html">Team</a>
                         </li>
-                        <?php
-                        if(isset($_SESSION["user"])){
-                            echo '
-                                <li class="nav-item">
-                                    <a class="nav-link" href="perfil.php">Perfil-'.$_SESSION["user"].'</a>
-                                </li>
-                             ';
-                        }
-                        ?>
+
+                        <%
+                            if(user != null){
+                                out.println("<li class='nav-item'><a class='nav-link' href='perfil.jsp'>Perfil-"+user+"</a></li>");
+                            }
+                        %>
 
                         <li class="nav-item">
-                            <?php
-                            if(isset($_SESSION["user"])){
-                                echo '<a class="nav-link" href="logout.php"> <i class="fa fa-user" aria-hidden="true"></i> Logout</a>';
-                            }else{
-                                echo '<a class="nav-link" href="login.html"> <i class="fa fa-user" aria-hidden="true"></i> Login</a>';
-                            }
-                            ?>
-
+                            <%
+                                if(user != null){
+                                    out.println("<a class='nav-link' href='logout.jsp'><i class='fa fa-user' aria-hidden='true'></i> Logout</a>");
+                                }else{
+                                    out.println("<a class='nav-link' href='login.html'><i class='fa fa-user' aria-hidden='true'></i> Login</a>");
+                                }
+                            %>
+                        </li>
                         <form class="form-inline">
                             <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
                                 <i class="fa fa-search" aria-hidden="true"></i>
@@ -155,52 +152,56 @@ if($result){
 
     <div class="heading_container heading_center" style="margin-top: 80px">
         <h2>
-            Perfil <span><?php echo $cargo?></span>
+            Perfil <span><%= cargo%></span>
         </h2>
         <div class="area">
+            <%
+                //admin
+                if(tipo == 4){
 
-            <?php
-                //adimn
-                if($tipoUser== ADMINISTRADOR){
-                    echo ' <div class="botoes">
-                <a href="gerirDados.php?utilizador=1&id='.$id_utilizador.'">
-                    <button>Gerir dados pessoais</button><br>
-                </a>
-                <a href="gestaoUtilizadores.php">
-                    <button>Gerir utilizadores</button><br>
-                </a>
-                <a href="gestaoInscricoes.php">
-                    <button>Gerir inscrições</button><br>
-                </a>
-                <a href="gestaoCursos.php">
-                    <button>Gerir Cursos</button><br>
-                </a>
-            </div>';
-                //docente
-                }elseif ($tipoUser == DOCENTE){
-                    echo ' <div class="botoes">
-                <a href="gerirDados.php?utilizador=1&id='.$id_utilizador.'">
-                    <button>Gerir dados pessoais</button><br>
-                </a>
-                <a href="gestaoInscricoes.php">
-                    <button>Gerir inscrições</button><br>
-                </a>
-                <a href="gestaoCursos.php">
-                    <button>Gerir Cursos</button><br>
-                </a>
-            </div>';
-                //aluno
-                }elseif ($tipoUser == ALUNO){
-                    echo ' <div class="botoes">
-                <a href="gerirDados.php?utilizador=1&id='.$id_utilizador.'">
-                    <button>Gerir dados pessoais</button><br>
-                </a>
-                <a href="gestaoInscricoes.php">
-                    <button>Gerir cursos inscrito</button><br>
-                </a>
-            </div>';
-                }
-            ?>
+
+                        out.println("<div class=\"botoes\">" +
+                                        "<a href='gerirDados.jsp?utilizador=1&id="+id+"'>" +
+                                            "<button>Gerir dados pessoais</button><br>\n" +
+                                        "</a>\n" +
+                                        "<a href=\"gestaoUtilizadores.jsp\">\n" +
+                                            "<button>Gerir utilizadores</button><br>\n" +
+                                        "</a>\n" +
+                                        "<a href=\"gestaoInscricoes.jsp\">\n" +
+                                            "<button>Gerir inscrições</button><br>\n" +
+                                        "</a>\n" +
+                                        "<a href=\"gestaoCursos.jsp\">\n" +
+                                            "<button>Gerir Cursos</button><br>\n" +
+                                        "</a>\n" +
+                                    "</div>");
+
+
+
+                }//docente
+                if (tipo == 3){
+                    out.println("<div class=\"botoes\">" +
+                                    "<a href='gerirDados.jsp?utilizador=1&id="+id+"'>" +
+                                        "<button>Gerir dados pessoais</button><br>\n" +
+                                    "</a>\n" +
+                                    "<a href=\"gestaoInscricoes.jsp\">\n" +
+                                        "<button>Gerir inscrições</button><br>\n" +
+                                    "</a>\n" +
+                                    "<a href=\"gestaoCursos.jsp\">\n" +
+                                        "<button>Gerir Cursos</button><br>\n" +
+                                    "</a>\n" +
+                                "</div>");
+                }//aluno
+                if (tipo == 2){
+                    out.println("<div class='botoes'>" +
+                                    "<a href='gerirDados.jsp?utilizador=1&id="+id+"'>" +
+                                        "<button>Gerir dados pessoais</button><br>" +
+                                    "</a>" +
+                                    "<a href='gestaoCursos.jsp'>" +
+                                        "<button>Gerir Cursos Inscritos</button><br>" +
+                                    "</a>" +
+                                "</div>");
+                }%>
+
 
         </div>
     </div>
@@ -270,13 +271,13 @@ if($result){
                         Links
                     </h4>
                     <div class="info_links">
-                        <a class="active" href="paginaPrincipal.php">
+                        <a class="active" href="paginaPrincipal.jsp">
                             Home
                         </a>
                         <a class="" href="about.html">
                             About
                         </a>
-                        <a class="" href="cursos.php">
+                        <a class="" href="cursos.jsp">
                             Services
                         </a>
                         <a class="" href="why.html">
@@ -328,6 +329,9 @@ if($result){
 
 </html>
 
-<?php
-
-mysqli_close($conn);
+<%
+    }catch(Exception e){
+        out.println(e);
+    }
+conn.close();
+%>

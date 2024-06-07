@@ -5,7 +5,6 @@
 <%
 
 String user = (String) session.getAttribute("username");
-int tipo = (Integer) session.getAttribute("tipo_utilizador");
 
 %>
 
@@ -72,13 +71,13 @@ int tipo = (Integer) session.getAttribute("tipo_utilizador");
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav  ">
               <li class="nav-item active">
-                <a class="nav-link" href="paginaPrincipal.php">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="paginaPrincipal.jsp">Home <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="about.html"> About</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="cursos.php">Cursos</a>
+                <a class="nav-link" href="cursos.jsp">Cursos</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="why.html">Why Us</a>
@@ -89,7 +88,7 @@ int tipo = (Integer) session.getAttribute("tipo_utilizador");
 
                 <%
                 if(user != null){
-                    out.println("<li class='nav-item'><a class='nav-link' href='perfil.php'>Perfil-"+user+"</a></li>");
+                    out.println("<li class='nav-item'><a class='nav-link' href='perfil.jsp'>Perfil-"+user+"</a></li>");
                 }
                 %>
 
@@ -132,13 +131,11 @@ int tipo = (Integer) session.getAttribute("tipo_utilizador");
                   </p>
                   <div class="btn-box">
 
-                      <?php
-                        if(empty($_SESSION["user"])){
-                            echo '<a href="login.html" class="btn1">
-                      Registe-se!
-                    </a>';
+                      <%
+                        if(user == null){
+                            out.println("<a href='login.html' class='btn1'> Registe-se! </a>");
                         }
-                      ?>
+                      %>
                     </a>
                   </div>
                 </div>
@@ -201,12 +198,12 @@ int tipo = (Integer) session.getAttribute("tipo_utilizador");
             <div class="detail-box">
 
               <h5>
-                <%out.println(nome);%>
+                <%=nome%>
               </h5>
               <p>
-                <%out.println(descricao);%>
+                <%=descricao%>
               </p>
-              <%out.println(verf);%>
+              <%=verf%>
             </div>
           </div>
         </div>
