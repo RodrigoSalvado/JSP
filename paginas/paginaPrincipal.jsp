@@ -190,30 +190,30 @@ String user = (String) session.getAttribute("username");
             }
         %>
 
-        <div class="col-md-4 ">
-          <div class="box ">
-            <div class="img-box">
-              <%out.println("<img src='s"+((count%3)+1)+".png' alt=''>");%>
-            </div>
-            <div class="detail-box">
+            <div class="col-md-4 ">
+              <div class="box ">
+                <div class="img-box">
+                  <%out.println("<img src='s"+((count%3)+1)+".png' alt=''>");%>
+                </div>
+                <div class="detail-box">
 
-              <h5>
-                <%=nome%>
-              </h5>
-              <p>
-                <%=descricao%>
-              </p>
-              <%=verf%>
+                  <h5>
+                    <%=nome%>
+                  </h5>
+                  <p>
+                    <%=descricao%>
+                  </p>
+                  <%=verf%>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
         <%
             if(count%3==2){
               out.println("</div>");
             }
             count++;
-          }
+          }//fim do while
         %>
 
 
@@ -340,7 +340,7 @@ String user = (String) session.getAttribute("username");
               <a class="" href="about.html">
                 About
               </a>
-              <a class="" href="cursos.php">
+              <a class="" href="cursos.jsp">
                 Services
               </a>
               <a class="" href="why.html">

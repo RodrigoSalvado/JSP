@@ -1,72 +1,12 @@
-<?php
-global $conn;
-include "../basedados/basedados.h";
+<%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="../basedados/basedados.h" %>
+<%
+    String user = (String) session.getAttribute("username");
+    int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
-session_start();
-
-
-$cursos = array();
-
-//informacoes dos cursos
-
-$sql = "SELECT nome, descricao, id_curso FROM curso ";
-$result = mysqli_query($conn, $sql);
-
-if(mysqli_num_rows($result)>0){
-    while($row = mysqli_fetch_assoc($result)){
-        $cursos[] = $row;
-    }
-
-}
-
-function printCursos($curso, $img, $sessao){
-
-    if($sessao){
-        echo '
-          <div class="col-md-4 ">
-             <div class="box ">
-                 <div class="img-box">
-                     <img src="s'.$img.'.png" alt="">
-                 </div>
-                 <div class="detail-box">
-                
-                    <h5>
-                        '.$curso['nome'].'
-                    </h5>
-                    <p>
-                        '.$curso['descricao'].'
-                    </p>
-                        <a href="inscricaoCurso.php?id='.$curso['id_curso'].'">
-                            Inscreva-se!
-                        </a>
-                 </div>
-             </div>
-          </div>';
-    }else{
-        echo '
-          <div class="col-md-4 ">
-             <div class="box ">
-                 <div class="img-box">
-                     <img src="s'.$img.'.png" alt="">
-                 </div>
-                 <div class="detail-box">
-                
-                    <h5>
-                        '.$curso['nome'].'
-                    </h5>
-                    <p>
-                        '.$curso['descricao'].'
-                    </p>
-                        <a href="login.html">
-                            Inicie sessão para se increver no nosso curso!
-                        </a>
-                 </div>
-             </div>
-          </div>';
-    }
-}
-
-?>
+%>
 
 <!DOCTYPE html>
 <html>
@@ -131,13 +71,13 @@ function printCursos($curso, $img, $sessao){
                   <div class="collapse navbar-collapse" id="navbarSupportedContent">
                       <ul class="navbar-nav  ">
                           <li class="nav-item active">
-                              <a class="nav-link" href="paginaPrincipal.php">Home <span class="sr-only">(current)</span></a>
+                              <a class="nav-link" href="paginaPrincipal.jsp">Home <span class="sr-only">(current)</span></a>
                           </li>
                           <li class="nav-item">
                               <a class="nav-link" href="about.html"> About</a>
                           </li>
                           <li class="nav-item">
-                              <a class="nav-link" href="cursos.php">Cursos</a>
+                              <a class="nav-link" href="cursos.jsp">Cursos</a>
                           </li>
                           <li class="nav-item">
                               <a class="nav-link" href="why.html">Why Us</a>
@@ -146,24 +86,20 @@ function printCursos($curso, $img, $sessao){
                               <a class="nav-link" href="team.html">Team</a>
                           </li>
 
-                          <?php
-                          if(isset($_SESSION["user"])){
-                              echo '
-                                <li class="nav-item">
-                                    <a class="nav-link" href="perfil.php">Perfil-'.$_SESSION["user"].'</a>
-                                </li>
-                             ';
-                          }
-                          ?>
+                          <%
+                              if(user != null){
+                                  out.println("<li class='nav-item'><a class='nav-link' href='perfil.jsp'>Perfil-"+user+"</a></li>");
+                              }
+                          %>
 
                           <li class="nav-item">
-                              <?php
-                              if(isset($_SESSION["user"])){
-                                  echo '<a class="nav-link" href="logout.php"> <i class="fa fa-user" aria-hidden="true"></i> Logout</a>';
-                              }else{
-                                  echo '<a class="nav-link" href="login.html"> <i class="fa fa-user" aria-hidden="true"></i> Login</a>';
-                              }
-                              ?>
+                              <%
+                                  if(user != null){
+                                      out.println("<a class='nav-link' href='logout.jsp'><i class='fa fa-user' aria-hidden='true'></i> Logout</a>");
+                                  }else{
+                                      out.println("<a class='nav-link' href='login.html'><i class='fa fa-user' aria-hidden='true'></i> Login</a>");
+                                  }
+                              %>
                           </li>
                           <form class="form-inline">
                               <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
@@ -182,39 +118,64 @@ function printCursos($curso, $img, $sessao){
   <!-- service section -->
 
   <section class="service_section layout_padding">
-    <div class="service_container">
-      <div class="container ">
-        <div class="heading_container heading_center">
-          <h2>
-            Os nossos <span>Cursos</span>
-          </h2>
-          <p>
-          </p>
-        </div>
-          <?php
-          $sql = "SELECT *, COUNT(*) as total FROM curso";
-          $result = mysqli_query($conn, $sql);
-          $count = 0;
+      <div class="service_container">
+          <div class="container ">
+              <div class="heading_container heading_center">
+                  <h2>
+                      Os nossos <span>Cursos</span>
+                  </h2>
+              </div>
 
-          if(mysqli_num_rows($result)>0) {
-              $row = mysqli_fetch_assoc($result);
+              <%
+                  String cursos = "SELECT * FROM curso";
+                  PreparedStatement psSql = conn.prepareStatement(cursos);
+                  ResultSet rsSql = psSql.executeQuery();
 
-              for ($i = 3; $i < $row["total"] + 3; $i++) {
-                  if ($i % 3 == 0) {
-                      echo '<div class="row">';
-                  }
-                  $curso = $cursos[$count];
-                  echo printCursos($curso, ($i%3)+1, isset($_SESSION["user"]));
-                  if ($i % 3 == 2) {
-                      echo '</div>';
-                  }
-                  $count++;
-              }
-          }
-          ?>
+                  int count = 3;
+                  while(rsSql.next()){
 
+                      String nome = rsSql.getString("nome");
+                      String descricao = rsSql.getString("descricao");
+                      int id = rsSql.getInt("id_curso");
+                      String verf = user == null? "<a href='./login.html'> Inicie sessão para se inscrever no nosso curso!</a>":
+                              "<a href='./inscricaoCurso.jsp?id="+id+"'>Inscreva-se</a>";
+
+
+                      if(count%3==0){
+                          out.println("<div class='row'>");
+                      }
+              %>
+
+                      <div class="col-md-4 ">
+                          <div class="box ">
+                              <div class="img-box">
+                                  <%out.println("<img src='s"+((count%3)+1)+".png' alt=''>");%>
+                              </div>
+                              <div class="detail-box">
+
+                                  <h5>
+                                      <%=nome%>
+                                  </h5>
+                                  <p>
+                                      <%=descricao%>
+                                  </p>
+                                  <%=verf%>
+                              </div>
+                          </div>
+                      </div>
+
+              <%
+                      if(count%3==2){
+                          out.println("</div>");
+                      }
+                      count++;
+                  }//fim do while
+              %>
+
+
+
+          </div>
       </div>
-    </div>
   </section>
 
   <!-- end service section -->
