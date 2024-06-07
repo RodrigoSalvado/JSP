@@ -54,6 +54,12 @@
         }
     }
 
+    String nome = null;
+    String descricao = null;
+    String docente = null;
+    int max_num = 0;
+    int inscritos = 0;
+
     if (curso == 1) {
         sql = "SELECT * FROM curso WHERE id_curso = '" + cursoAlterar + "'";
         psSql = conn.prepareStatement(sql);
@@ -61,17 +67,17 @@
 
         rsSql.next();
 
-        String nome = rsSql.getString("nome");
-        String docente = rsSql.getString("docente");
-        String descricao = rsSql.getString("descricao");
-        int max_num = rsSql.getInt("max_num");
+        nome = rsSql.getString("nome");
+        docente = rsSql.getString("docente");
+        descricao = rsSql.getString("descricao");
+        max_num = rsSql.getInt("max_num");
 
         sql = "SELECT COUNT(*) as inscritos FROM util_curso WHERE id_curso = '" + cursoAlterar + "'";
         psSql = conn.prepareStatement(sql);
         rsSql = psSql.executeQuery();
         rsSql.next();
 
-        int inscritos = rsSql.getInt("inscritos");
+        inscritos = rsSql.getInt("inscritos");
     }
 
 
@@ -210,6 +216,7 @@ if(utilizador == 1){
             "                    <br>\n" +
             "                    <input type=\"email\" name=\"email\" placeholder=\"Novo email\"  class=\"inp\">\n");
 
+            // vê se é o admin e faz a logica do select para os cargos
             if(tipo == 4){
                 out.println("                    <br><br>\n" +
                             "                    <label>Tipo Utilizador: " + cargo + "</label>\n" +
@@ -225,11 +232,6 @@ if(utilizador == 1){
                 out.println("</select>");
             }
 
-
-
-
-
-
     out.println(
             "                    <br><br>\n" +
             "                    <label>Password: " + password + " </label>\n" +
@@ -244,9 +246,137 @@ if(utilizador == 1){
 
 }
 
+if(curso == 1){
+
+    // Admin
+    if(tipo == 4){
+        sql = "SELECT * FROM utilizador WHERE tipo_utilizador = 3 OR tipo_utilizador = 4";
+        psSql = conn.prepareStatement(sql);
+        rsSql = psSql.executeQuery();
+
+        out.println("<div class=\"container-inscricao\">\n" +
+                "    <div class=\"informacoes\">\n" +
+                "        <form action=\"alterar.jsp?curso=1&id_curso="+cursoAlterar+"\" method=\"post\" >\n" +
+                "            <br>\n" +
+                "            <h3>Alterar Informações do Curso</h3>\n" +
+                "            <br><br>\n" +
+                "            <label>Nome: "+ nome +"</label>\n" +
+                "            <br>\n" +
+                "            <input type=\"text\" name=\"nome\" placeholder=\"Nome do curso...\" class=\"inp\" required>\n" +
+                "            <br><br>\n" +
+                "            <label>Docente: "+ docente +"</label>\n" +
+                "            <br>\n");
+
+        out.println(
+                "                    <select name=\"docente\" class=\"inp\">" +
+                        "                       <option value=\""+docente+"\">"+docente+"</option>");
+
+        while(rsSql.next()){
+            out.println("<option value=\""+rsSql.getInt("id_utilizador")+"\">"+rsSql.getString("username")+"</option>");
+        }
+        out.println("</select>");
+
+        out.println("            <br><br>\n" +
+                "            <label>Descrição do Curso:</label>\n" +
+                "            <br>\n" +
+                "            <textarea type=\"text\" name=\"descricao\" placeholder=\"Descrição do curso...\" class=\"inp\" required>"+ descricao +"</textarea>\n" +
+                "            <br><br>\n" +
+                "            <label>Numero vagas disponiveis: "+ (max_num - inscritos) +"</label><br>\n" +
+                "            <label>Numero inscritos: "+ inscritos +"</label>\n" +
+                "            <br>\n" +
+                "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\" required>\n" +
+                "            <br><br><br>\n" +
+                "            <input type=\"submit\" value=\"Alterar Curso\" name=\"botao\">\n" +
+                "            <br><br>\n" +
+                "        </form>\n" +
+                "    </div>\n" +
+                "</div>");
+    }
+
+    // Docente
+    if(tipo == 3){
+        out.println("<div class=\"container-inscricao\">\n" +
+                "    <div class=\"informacoes\">\n" +
+                "        <form action=\"alterar.jsp?curso=1&id_curso="+cursoAlterar+"\" method=\"post\" >\n" +
+                "            <br>\n" +
+                "            <h3>Alterar Informações do Curso</h3>\n" +
+                "            <br><br>\n" +
+                "            <label>Nome: "+ nome +"</label>\n" +
+                "            <br>\n" +
+                "            <br><br>\n" +
+                "            <label>Docente: "+ docente +"</label>\n" +
+                "            <br>\n" +
+                "            <br><br>\n" +
+                "            <label>Descrição do Curso: "+ descricao +"</label>\n" +
+                "            <br>\n" +
+                "            <br><br>\n" +
+                "            <label>Numero vagas disponiveis: "+ (max_num - inscritos) +"</label><br>\n" +
+                "            <label>Numero inscritos: "+ inscritos +"</label>\n" +
+                "            <br>\n" +
+                "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\" required>\n" +
+                "            <br><br><br>\n" +
+                "            <input type=\"submit\" value=\"Alterar Curso\" name=\"botao\">\n" +
+                "            <br><br>\n" +
+                "        </form>\n" +
+                "    </div>\n" +
+                "</div>");
+    }
+}
+
 
 
 %>
+
+
+if($tipo == ADMINISTRADOR){
+
+if($tipo == DOCENTE){
+echo '
+<div class="container-inscricao">
+    <div class="informacoes">
+        <form action="alterar.php?curso=1&id_curso='.$id_curso.'" method="post" >
+            <br>
+            <h3>Alterar Informações do Curso</h3>
+            <br><br>
+            <label>Nome: '.$nome.'</label>
+            <br>
+            <input type="hidden" name="nome" placeholder="Nome do curso..." value="'.$nome.'" class="inp">
+            <br><br>
+            <label>Docente: '.$docente.'</label>
+            <br>
+            <select name="docente" class="inp" hidden>';
+                $sql = "SELECT username FROM utilizador WHERE tipo_utilizador = 3 OR tipo_utilizador = 4";
+                $result = mysqli_query($conn, $sql);
+                echo "<option>$docente</option>";
+                if(mysqli_num_rows($result)>0){
+                while($row = mysqli_fetch_assoc($result)){
+                if(strcmp($row["username"],$docente)!=0){
+                echo "<option value='".$row['username']."'>".$row['username']."</option>";
+                }
+
+                }
+                }
+                echo'</select>
+            <br><br>
+            <label>Descrição do Curso:<br> '.$desc.'</label>
+            <br>
+            <textarea name="descricao" placeholder="Descrição do curso..." class="inp" hidden>'.$desc.'</textarea>
+            <br><br>
+            <label>Numero vagas: '.($max_num - $inscritos).'</label><br>
+            <label>Numero inscritos: '.$inscritos.'</label>
+            <br>
+            <input type="number" min="'.$inscritos.'" step="1" name="max_num" placeholder="Insira número de vagas..." value="'.$max_num.'" class="inp" required>
+            <br><br><br>
+            <input type="submit" value="Alterar Curso" name="botao">
+            <br><br>
+        </form>
+    </div>
+</div>
+';
+}
+}
+
+
 
 
 
