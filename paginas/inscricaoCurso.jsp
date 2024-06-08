@@ -133,8 +133,8 @@
 
 <div class="container-inscricao">
     <div class="informacoes">
-        <form action="inscrever.php" method="post">
-            <%out.println("<input type=\"hidden\" name=\"nome\" value=\""+id_curso+"\">");%>
+        <form action="inscrever.jsp" method="post">
+            <%out.println("<input type=\"hidden\" name=\"curso\" value=\""+id_curso+"\">");%>
             <br>
             <h3>Solicitar inscrição no curso de <br><span style="color: #0F054CFF;"><?php echo $nome ?></span></h3>
             <br><br>

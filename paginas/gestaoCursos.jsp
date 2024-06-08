@@ -1,18 +1,16 @@
-<?php
-global $conn;
-include "../basedados/basedados.h";
-include "ConstUtilizadores.php";
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="../basedados/basedados.h" %>
+<%
+        String user = (String) session.getAttribute("username");
+        int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
-session_start();
+        if(tipo == 1 || tipo == 0 || tipo == 2){
+            out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
+        }
 
-$user = $_SESSION["user"];
-$tipo = $_SESSION["tipo"];
 
-if($tipo == CLIENTE || $tipo == ALUNO || empty($tipo)){
-    echo "<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.php';</script>";
-}
+%>
 
-?>
 
 
     <!DOCTYPE html>
@@ -65,7 +63,7 @@ if($tipo == CLIENTE || $tipo == ALUNO || empty($tipo)){
         <header class="header_section">
             <div class="container-fluid">
                 <nav class="navbar navbar-expand-lg custom_nav-container ">
-                    <a class="navbar-brand" href="paginaPrincipal.php">
+                    <a class="navbar-brand" href="paginaPrincipal.jsp">
             <span>
               Crypto Academy
             </span>
@@ -78,13 +76,13 @@ if($tipo == CLIENTE || $tipo == ALUNO || empty($tipo)){
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav  ">
                             <li class="nav-item active">
-                                <a class="nav-link" href="paginaPrincipal.php">Home <span class="sr-only">(current)</span></a>
+                                <a class="nav-link" href="paginaPrincipal.jsp">Home <span class="sr-only">(current)</span></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="about.html"> About</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="cursos.php">Cursos</a>
+                                <a class="nav-link" href="cursos.jsp">Cursos</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="why.html">Why Us</a>
@@ -93,24 +91,20 @@ if($tipo == CLIENTE || $tipo == ALUNO || empty($tipo)){
                                 <a class="nav-link" href="team.html">Team</a>
                             </li>
 
-                            <?php
-                            if(isset($_SESSION["user"])){
-                                echo '
-                                <li class="nav-item">
-                                    <a class="nav-link" href="perfil.php">Perfil-'.$_SESSION["user"].'</a>
-                                </li>
-                             ';
-                            }
-                            ?>
+                            <%
+                                if(user != null){
+                                    out.println("<li class='nav-item'><a class='nav-link' href='perfil.jsp'>Perfil-"+user+"</a></li>");
+                                }
+                            %>
 
                             <li class="nav-item">
-                                <?php
-                                if(isset($_SESSION["user"])){
-                                    echo '<a class="nav-link" href="logout.php"> <i class="fa fa-user" aria-hidden="true"></i> Logout</a>';
-                                }else{
-                                    echo '<a class="nav-link" href="login.html"> <i class="fa fa-user" aria-hidden="true"></i> Login</a>';
-                                }
-                                ?>
+                                <%
+                                    if(user != null){
+                                        out.println("<a class='nav-link' href='logout.jsp'><i class='fa fa-user' aria-hidden='true'></i> Logout</a>");
+                                    }else{
+                                        out.println("<a class='nav-link' href='login.html'><i class='fa fa-user' aria-hidden='true'></i> Login</a>");
+                                    }
+                                %>
                             </li>
                             <form class="form-inline">
                                 <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
@@ -136,124 +130,58 @@ if($tipo == CLIENTE || $tipo == ALUNO || empty($tipo)){
         <div class="container">
             <table class="table table-primary table-sortable" role="grid">
 
-                    <?php
-                        if($tipo == ADMINISTRADOR){
+                <%
 
-                            echo '
-                            <thead>
-                                <tr>
-                                    <th class="text-center header" scope="col" role="columnheader"><span>Nome Curso</span></th>
-                                    <th class="text-center header" scope="col" role="columnheader"><span>Docente</span></th>
-                                    <th class="text-center header" scope="col" role="columnheader"><span>Vagas Totais</span></th>
-                                    <th class="text-center header" scope="col" role="columnheader"><span>Vagas disponiveis</span></th>
-                                    <th class="text-center header" scope="col" role="columnheader"><span>Apagar</span></th>
-                                    <th class="text-center header" scope="col" role="columnheader"><span>Detalhes</span></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <div class="botoes_gest">';
+                    out.println("<thead>\n" +
+"                                <tr>\n" +
+"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Nome Curso</span></th>\n" +
+"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Docente</span></th>\n" +
+"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Vagas Totais</span></th>\n" +
+"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Vagas disponiveis</span></th>\n" +
+"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Apagar</span></th>\n" +
+"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Detalhes</span></th>\n" +
+"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Inscrever Utilizador</span></th>\n" +
+"                                </tr>\n" +
+"                            </thead>\n" +
+"                            <tbody>\n" +
+"                            <div class=\"botoes_gest\">");
+                                             //Admin
+                            sql = tipo == 4? "SELECT c.nome, c.id_curso, c.docente, c.max_num, COUNT(uc.id_inscricao) " +
+                                             "AS inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso GROUP BY c.id_curso":
+                            //Docente
+                            "SELECT c.nome, c.id_curso, c.docente, c.max_num, COUNT(uc.id_inscricao)" +
+                            " inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso WHERE c.docente = '"+ user +"' GROUP BY c.id_curso";
+                            psSql = conn.prepareStatement(sql);
+                            rsSql = psSql.executeQuery();
 
+                            while(rsSql.next()){
+                                String nome = rsSql.getString("nome");
+                                String docente = rsSql.getString("docente");
+                                int id_curso = rsSql.getInt("id_curso");
+                                int inscritos = rsSql.getInt("inscritos");
+                                int vagasCurso = rsSql.getInt("max_num");
 
-
-                            $sql = "SELECT * FROM curso";
-                            $result = mysqli_query($conn, $sql);
-
-                            if(mysqli_num_rows($result)>0){
-                                while($row = mysqli_fetch_assoc($result)){
-
-                                    $nome = $row["nome"];
-                                    $docente = $row["docente"];
-                                    $max_num = $row["max_num"];
-                                    $id_curso = $row["id_curso"];
-
-
-                                    $sqlVagas = "SELECT COUNT(*) as total FROM util_curso WHERE curso = '$nome' AND aceite = 1";
-                                    $resultVagas = mysqli_query($conn, $sqlVagas);
-
-                                    if(mysqli_num_rows($resultVagas)>0){
-                                        $rowVagas = mysqli_fetch_assoc($resultVagas);
-                                        $vagas = $max_num - $rowVagas["total"];
-                                    }
-
-                                    echo "
-                                    <tr>
-                                        <td class='text-center'>$nome</td>
-                                        <td class='text-center'>$docente</td>
-                                        <td class='text-center'>$max_num</td>
-                                        <td class='text-center'>$vagas</td>
-                                        <td class='text-center'><a href='apagar.php?curso=$nome'><button>Apagar</button></a></td>
-                                        <td class='text-center'><a href='gerirDados.php?curso=1&id_curso=$id_curso'><button>Detalhes</button></a></td>
-                                    </tr>";
-
-                                }
-
-                            }
-                            echo '
-                                        </div>
-                                        </tbody>
-                                    </table>';
-
-                            echo '<a href="criarCurso.php"><button class="btn-curso" style="margin: 20px">Adicionar Curso</button></a>';
-                        }
-                        if($tipo == DOCENTE){
-                            echo '
-                            <thead>
-                                <tr>
-                                    <th class="text-center header" scope="col" role="columnheader"><span>Nome Curso</span></th>
-                                    <th class="text-center header" scope="col" role="columnheader"><span>Docente</span></th>
-                                    <th class="text-center header" scope="col" role="columnheader"><span>Vagas Totais</span></th>
-                                    <th class="text-center header" scope="col" role="columnheader"><span>Vagas disponiveis</span></th>
-                                    <th class="text-center header" scope="col" role="columnheader"><span>Detalhes</span></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <div class="botoes_gest">';
-
-
-
-                            $sql = "SELECT * FROM curso WHERE docente = '$user'";
-                            $result = mysqli_query($conn, $sql);
-
-                            if(mysqli_num_rows($result)>0){
-                                while($row = mysqli_fetch_assoc($result)){
-
-                                    $nome = $row["nome"];
-                                    $docente = $row["docente"];
-                                    $max_num = $row["max_num"];
-                                    $id_curso = $row["id_curso"];
-
-
-                                    $sqlVagas = "SELECT COUNT(*) as total FROM util_curso WHERE curso = '$nome' AND aceite = 1";
-                                    $resultVagas = mysqli_query($conn, $sqlVagas);
-
-                                    if(mysqli_num_rows($resultVagas)>0){
-                                        $rowVagas = mysqli_fetch_assoc($resultVagas);
-                                        $vagas = $max_num - $rowVagas["total"];
-                                    }
-
-                                    echo "
-                                    <tr>
-                                        <td class='text-center'>$nome</td>
-                                        <td class='text-center'>$docente</td>
-                                        <td class='text-center'>$max_num</td>
-                                        <td class='text-center'>$vagas</td>
-                                        <td class='text-center'><a href='gerirDados.php?curso=1&id_curso=$id_curso'><button>Detalhes</button></a></td>
-                                    </tr>";
-
-                                }
-
+                                out.println("<tr>\n" +
+"                                        <td class='text-center'>"+ nome +"</td>\n" +
+"                                        <td class='text-center'>"+ docente +"</td>\n" +
+"                                        <td class='text-center'>"+ vagasCurso +"</td>\n" +
+"                                        <td class='text-center'>"+ (vagasCurso - inscritos) +"</td>\n" +
+"                                        <td class='text-center'><a href='apagar.jsp?curso="+ id_curso +"'><button>Apagar</button></a></td>\n" +
+"                                        <td class='text-center'><a href='gerirDados.jsp?curso=1&id_curso="+ id_curso +"'><button>Detalhes</button></a></td>\n" +
+"                                        <td class='text-center'><a href='inscreverUtilizador.jsp?id_curso="+ id_curso +"'><button>Inscrever</button></a></td>\n" +
+"                                    </tr>");
 
 
                             }
-                            echo '
-                                        </div>
-                                        </tbody>
-                                    </table>';
-                        }
 
-                    ?>
+                            out.println(" </div>\n" +
+"                                        </tbody>\n" +
+"                                    </table>");
 
-
+                            if(tipo==4){
+                                out.println("<a href=\"criarCurso.jsp\"><button class=\"btn-curso\" style=\"margin: 20px\">Adicionar Curso</button></a>");
+                            }
+                %>
 
 
         </div>
