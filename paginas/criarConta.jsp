@@ -8,15 +8,9 @@ String email = request.getParameter("email");
 
 try {
     //verifica se ja existe o user ou email
-    String sql ="SELECT * FROM utilizador WHERE username = ? OR email = ?";
-    PreparedStatement psSql =conn.prepareStatement(sql);
-    psSql.setString(1,user);
-    psSql.setString(2,email);
-    ResultSet rsSql =psSql.executeQuery();
-
-    out.println(user + "<br>");
-    out.println(email + "<br>");
-    out.println(pass + "<br>");
+    sql ="SELECT * FROM utilizador WHERE username = '"+user+"' OR email = '"+email+"'";
+    psSql =conn.prepareStatement(sql);
+    rsSql =psSql.executeQuery();
 
     if(rsSql.next()){
         // Ver se é o user ou email (futuro)
@@ -24,15 +18,16 @@ try {
     }else{
 
         // Cria a conta
-        String insert = "INSERT INTO utilizador (username, password, email) VALUES (?, ?, ?)";
-        PreparedStatement ps = conn.prepareStatement(insert);
-        ps.setString(1, user);
-        ps.setString(2, pass);
-        ps.setString(3, email);
+        sql = "INSERT INTO utilizador (username, password, email) VALUES ('"+user+"', '"+pass+"', '"+email+"')";
+        psSql = conn.prepareStatement(sql);
+        rowsAffected = psSql.executeUpdate();
 
-        ps.executeUpdate();
+        if(rowsAffected > 0){
+            out.println("<script>window.alert('Conta criada com sucesso!'); window.location.href = './login.html'</script>");
+        }else{
+            out.println("<script>window.alert('Erro ao criar conta!'); window.location.href = './login.html'</script>");
+        }
 
-        out.println("<script>window.alert('Conta criada com sucesso!'); window.location.href = './login.html'</script>");
     }
 
 }catch(Exception e){

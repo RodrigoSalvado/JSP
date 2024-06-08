@@ -2,6 +2,12 @@
 <%@ include file="../basedados/basedados.h" %>
 <%
 
+    int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
+
+    if(tipo == 1 || tipo == 0){
+        out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
+    }
+
     int id_utilizador = request.getParameter("id") == null? 0: Integer.parseInt(request.getParameter("id"));
     int validado = request.getParameter("validado") == null? 0: Integer.parseInt(request.getParameter("validado"));
     int id_curso = request.getParameter("curso") == null? 0: Integer.parseInt(request.getParameter("curso"));
