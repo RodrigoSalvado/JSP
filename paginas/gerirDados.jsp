@@ -272,7 +272,7 @@ if(curso == 1){
 
         while(rsSql.next()){
             if(!rsSql.getString("username").equals(docente)){
-                out.println("<option value=\""+rsSql.getInt("id_utilizador")+"\">"+rsSql.getString("username")+"</option>");
+                out.println("<option value=\""+rsSql.getString("username")+"\">"+rsSql.getString("username")+"</option>");
             }
         }
         out.println("</select>");
@@ -285,7 +285,7 @@ if(curso == 1){
                 "            <label>Numero vagas disponiveis: "+ (max_num - inscritos) +"</label><br>\n" +
                 "            <label>Numero inscritos: "+ inscritos +"</label>\n" +
                 "            <br>\n" +
-                "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\" required>\n" +
+                "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\" \n" +
                 "            <br><br><br>\n" +
                 "            <input type=\"submit\" value=\"Alterar Curso\" name=\"botao\">\n" +
                 "            <br><br>\n" +
@@ -314,7 +314,7 @@ if(curso == 1){
                 "            <label>Numero vagas disponiveis: "+ (max_num - inscritos) +"</label><br>\n" +
                 "            <label>Numero inscritos: "+ inscritos +"</label>\n" +
                 "            <br>\n" +
-                "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\" required>\n" +
+                "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\">\n" +
                 "            <br><br><br>\n" +
                 "            <input type=\"submit\" value=\"Alterar Curso\" name=\"botao\">\n" +
                 "            <br><br>\n" +
