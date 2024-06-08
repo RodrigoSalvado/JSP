@@ -203,8 +203,7 @@ if(utilizador == 1){
 
     out.println("<div class=\"container-inscricao\">\n" +
             "            <div class=\"informacoes\">\n" +
-            "                <form action=\"alterar.jsp?utilizador=" + utilizador + "\" method=\"post\" >\n" +
-            "                    <input type=\"hidden\" name=\"id_utilizador\" value=\"'" + utilizadorAlterar + "'\">\n" +
+            "                <form action=\"alterar.jsp?utilizador=" + utilizador + "&id="+utilizadorAlterar+"\" method=\"post\" >\n" +
             "                    <br>\n" +
             "                    <h3>Alterar informações pessoais</h3>\n" +
             "                    <br><br>\n" +
