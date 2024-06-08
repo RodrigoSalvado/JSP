@@ -50,11 +50,8 @@
             }else{
 
                 // Inscrever
-                sql = "INSERT INTO util_curso (id_utilizador, id_curso, aceite) VALUES (?,?,?)";
+                sql = "INSERT INTO util_curso (id_utilizador, id_curso, aceite) VALUES ("+id_utilizador+","+id_curso+","+0+")";
                 psSql = conn.prepareStatement(sql);
-                psSql.setInt(1, id_utilizador);
-                psSql.setInt(2, id_curso);
-                psSql.setInt(3, 0);
                 psSql.executeUpdate();
 
                 out.println("<script>window.alert('Muito obrigado!\\\nAguarde até que a sua inscrição seja validada!') ; window.location.href = 'paginaPrincipal.jsp';</script>");

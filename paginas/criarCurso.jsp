@@ -1,17 +1,16 @@
-<?php
-include "../basedados/basedados.h";
-include "ConstUtilizadores.php";
-global $conn;
-session_start();
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="../basedados/basedados.h" %>
+<%
+    String user = (String) session.getAttribute("username");
+    int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
-$tipo = $_SESSION["tipo"];
-
-if($tipo != ADMINISTRADOR || empty($tipo)){
-    echo "<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.php';</script>";
-}
+    if(tipo != 4 || tipo == 0){
+        out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
+    }
 
 
-?>
+%>
+
 
 <!DOCTYPE html>
 <html>
@@ -63,7 +62,7 @@ if($tipo != ADMINISTRADOR || empty($tipo)){
     <header class="header_section">
         <div class="container-fluid">
             <nav class="navbar navbar-expand-lg custom_nav-container ">
-                <a class="navbar-brand" href="paginaPrincipal.php">
+                <a class="navbar-brand" href="paginaPrincipal.jsp">
             <span>
               Crypto Academy
             </span>
@@ -76,13 +75,13 @@ if($tipo != ADMINISTRADOR || empty($tipo)){
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav  ">
                         <li class="nav-item active">
-                            <a class="nav-link" href="paginaPrincipal.php">Home <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="paginaPrincipal.jsp">Home <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="about.html"> About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="cursos.php">Cursos</a>
+                            <a class="nav-link" href="cursos.jsp">Cursos</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="why.html">Why Us</a>
@@ -91,24 +90,20 @@ if($tipo != ADMINISTRADOR || empty($tipo)){
                             <a class="nav-link" href="team.html">Team</a>
                         </li>
 
-                        <?php
-                        if(isset($_SESSION["user"])){
-                            echo '
-                                <li class="nav-item">
-                                    <a class="nav-link" href="perfil.php">Perfil</a>
-                                </li>
-                             ';
-                        }
-                        ?>
+                        <%
+                            if(user != null){
+                                out.println("<li class='nav-item'><a class='nav-link' href='perfil.jsp'>Perfil-"+user+"</a></li>");
+                            }
+                        %>
 
                         <li class="nav-item">
-                            <?php
-                            if(isset($_SESSION["user"])){
-                                echo '<a class="nav-link" href="logout.php"> <i class="fa fa-user" aria-hidden="true"></i> Logout</a>';
-                            }else{
-                                echo '<a class="nav-link" href="login.html"> <i class="fa fa-user" aria-hidden="true"></i> Login</a>';
-                            }
-                            ?>
+                            <%
+                                if(user != null){
+                                    out.println("<a class='nav-link' href='logout.jsp'><i class='fa fa-user' aria-hidden='true'></i> Logout</a>");
+                                }else{
+                                    out.println("<a class='nav-link' href='login.html'><i class='fa fa-user' aria-hidden='true'></i> Login</a>");
+                                }
+                            %>
                         </li>
                         <form class="form-inline">
                             <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
@@ -125,49 +120,52 @@ if($tipo != ADMINISTRADOR || empty($tipo)){
 
 <!-- alterar dados -->
 
-<?php
-    echo '
-        <div class="container-inscricao">
-            <div class="informacoes">
-                <form action="" method="post" >
-                    <br>
-                    <h3>Criar Curso</h3>
-                    <br><br>
-                    <label>Nome: </label>
-                    <br>
-                    <input type="text" name="nome" placeholder="Nome do curso..." class="inp" required>
-                    <br><br>
-                    <label>Docente:</label>
-                    <br>
-                    <select name="docente" class="inp" required>';
-                        $sql = "SELECT username FROM utilizador WHERE tipo_utilizador = 3 OR tipo_utilizador = 4";
-                        $result = mysqli_query($conn, $sql);
-                        echo "<option></option>";
-                        if(mysqli_num_rows($result)>0){
-                            while($row = mysqli_fetch_assoc($result)){
-                                echo "<option value='".$row['username']."'>".$row['username']."</option>";
-                            }
+<%
+
+    out.println("<div class=\"container-inscricao\">\n" +
+            "            <div class=\"informacoes\">\n" +
+            "                <form action=\"\" method=\"post\" >\n" +
+            "                    <br>\n" +
+            "                    <h3>Criar Curso</h3>\n" +
+            "                    <br><br>\n" +
+            "                    <label>Nome: </label>\n" +
+            "                    <br>\n" +
+            "                    <input type=\"text\" name=\"nome\" placeholder=\"Nome do curso...\" class=\"inp\" required>\n" +
+            "                    <br><br>\n" +
+            "                    <label>Docente:</label>\n" +
+            "                    <br>\n" +
+            "                    <select name=\"docente\" class=\"inp\" required>'");
+
+                        sql = "SELECT username FROM utilizador WHERE tipo_utilizador = 3 OR tipo_utilizador = 4";
+                        psSql = conn.prepareStatement(sql);
+                        rsSql = psSql.executeQuery();
+
+                        out.println("<option></option>");
+
+                        while(rsSql.next()){
+                            out.println("<option value = "+ rsSql.getString("username")+"> "+ rsSql.getString("username")+ "</option>");
                         }
-                    echo'</select>
-                    <br><br>
-                    <label>Descrição do Curso:</label>
-                    <br>
-                    <textarea type="text" name="descricao" placeholder="Descrição do curso..." class="inp" required></textarea>
-                    <br><br>
-                    <label>Numero vagas:</label>
-                    <br>
-                    <input type="number" min="5" step="1" name="max_num" placeholder="Insira número de vagas..." class="inp" required>
-                    <br><br><br>
-                    <input type="submit" value="Criar Curso" name="botao">
-                    <br><br>
-                </form>
-            </div>
-        </div>
-    ';
 
 
+    out.println("</select>\n" +
+    "                    <br><br>\n" +
+    "                    <label>Descrição do Curso:</label>\n" +
+    "                    <br>\n" +
+    "                    <textarea type=\"text\" name=\"descricao\" placeholder=\"Descrição do curso...\" class=\"inp\" required></textarea>\n" +
+    "                    <br><br>\n" +
+    "                    <label>Numero vagas:</label>\n" +
+    "                    <br>\n" +
+    "                    <input type=\"number\" min=\"5\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\" class=\"inp\" required>\n" +
+    "                    <br><br><br>\n" +
+    "                    <input type=\"submit\" value=\"Criar Curso\" name=\"botao\">\n" +
+    "                    <br><br>\n" +
+    "                </form>\n" +
+    "            </div>\n" +
+    "        </div>");
 
-?>
+
+%>
+
 
 <!-- info section -->
 
@@ -288,19 +286,32 @@ if($tipo != ADMINISTRADOR || empty($tipo)){
 
 </html>
 
-<?php
+<%
+    String botao = request.getParameter("botao");
 
-if(isset($_POST["botao"])){
+    if(botao != null){
+        String docente = request.getParameter("docente");
+        String nome = request.getParameter("nome");
+        String descricao = request.getParameter("descricao");
+        int max_num = Integer.parseInt(request.getParameter("max_num"));
 
-    $docente = $_POST["docente"];
-    $nome = $_POST["nome"];
-    $descricao = $_POST["descricao"];
-    $max_num = $_POST["max_num"];
+        sql = "SELECT * FROM curso WHERE nome = "+ nome +" OR descricao = "+ descricao + ";";
+        psSql = conn.prepareStatement(sql);
+        rsSql = psSql.executeQuery();
 
-    $sql = "INSERT INTO curso(docente, nome, descricao, max_num) VALUES ('$docente', '$nome', '$descricao', '$max_num')";
-    $result = mysqli_query($conn, $sql);
-    echo "<script>alert('Curso Criado!')</script>";
-    header("Location: gestaoCursos.php");
-}
+        if(rsSql.next()){
+            out.println("<script>window.alert('Já existe um curso com esse nome/descrição!'); window.location.href = 'criarCurso.jsp';</script>");
+        }else{
+            sql = "INSERT INTO curso(docente, nome, descricao, max_num) VALUES ('"+docente+"', '"+nome+"', '"+descricao+"', '"+max_num+"')";
+            psSql = conn.prepareStatement(sql);
+            psSql.executeUpdate();
 
-mysqli_close($conn);
+            out.println("<script>window.alert('Curso Criado') ; window.location.href = 'gestaoCursos.jsp';</script>");
+        }
+
+
+    }
+
+    conn.close();
+%>
+
