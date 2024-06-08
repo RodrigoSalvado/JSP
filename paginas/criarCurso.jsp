@@ -4,7 +4,7 @@
     String user = (String) session.getAttribute("username");
     int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
-    if(tipo != 4 || tipo == 0){
+    if(tipo != 4){
         out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
     }
 
@@ -295,7 +295,7 @@
         String descricao = request.getParameter("descricao");
         int max_num = Integer.parseInt(request.getParameter("max_num"));
 
-        sql = "SELECT * FROM curso WHERE nome = "+ nome +" OR descricao = "+ descricao + ";";
+        sql = "SELECT * FROM curso WHERE nome = '"+ nome +"' OR descricao = '"+ descricao + "';";
         psSql = conn.prepareStatement(sql);
         rsSql = psSql.executeQuery();
 
@@ -304,9 +304,14 @@
         }else{
             sql = "INSERT INTO curso(docente, nome, descricao, max_num) VALUES ('"+docente+"', '"+nome+"', '"+descricao+"', '"+max_num+"')";
             psSql = conn.prepareStatement(sql);
-            psSql.executeUpdate();
+            int rowsAffected = psSql.executeUpdate();
 
-            out.println("<script>window.alert('Curso Criado') ; window.location.href = 'gestaoCursos.jsp';</script>");
+            if(rowsAffected > 0){
+                out.println("<script>window.alert('Curso Criado') ; window.location.href = 'gestaoCursos.jsp';</script>");
+            }else{
+                out.println("<script>window.alert('Erro ao criar curso!') ; window.location.href = 'gestaoCursos.jsp';</script>");
+            }
+
         }
 
 

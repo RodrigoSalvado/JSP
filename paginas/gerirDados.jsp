@@ -222,7 +222,7 @@ if(utilizador == 1){
                             "                    <label>Tipo Utilizador: " + cargo + "</label>\n" +
                             "                    <br>\n" +
                             "                    <select name=\"tipo_utilizador\" class=\"inp\">" +
-                            "                       <option value=\""+tipo_utilizador+"\">"+cargo+"</option>");
+                            "                       <option></option>");
 
                 while(rsSql.next()){
                     if(rsSql.getInt("id") != tipo_utilizador && rsSql.getInt("id")!= 5){
@@ -262,24 +262,26 @@ if(curso == 1){
                 "            <br><br>\n" +
                 "            <label>Nome: "+ nome +"</label>\n" +
                 "            <br>\n" +
-                "            <input type=\"text\" name=\"nome\" placeholder=\"Nome do curso...\" class=\"inp\" required>\n" +
+                "            <input type=\"text\" name=\"nome\" placeholder=\"Nome do curso...\" class=\"inp\">\n" +
                 "            <br><br>\n" +
                 "            <label>Docente: "+ docente +"</label>\n" +
                 "            <br>\n");
 
         out.println(
                 "                    <select name=\"docente\" class=\"inp\">" +
-                        "                       <option value=\""+docente+"\">"+docente+"</option>");
+                        "                       <option></option>");
 
         while(rsSql.next()){
-            out.println("<option value=\""+rsSql.getInt("id_utilizador")+"\">"+rsSql.getString("username")+"</option>");
+            if(!rsSql.getString("username").equals(docente)){
+                out.println("<option value=\""+rsSql.getInt("id_utilizador")+"\">"+rsSql.getString("username")+"</option>");
+            }
         }
         out.println("</select>");
 
         out.println("            <br><br>\n" +
                 "            <label>Descrição do Curso:</label>\n" +
                 "            <br>\n" +
-                "            <textarea type=\"text\" name=\"descricao\" placeholder=\"Descrição do curso...\" class=\"inp\" required>"+ descricao +"</textarea>\n" +
+                "            <textarea type=\"text\" name=\"descricao\" placeholder=\"Descrição do curso...\" class=\"inp\"></textarea>\n" +
                 "            <br><br>\n" +
                 "            <label>Numero vagas disponiveis: "+ (max_num - inscritos) +"</label><br>\n" +
                 "            <label>Numero inscritos: "+ inscritos +"</label>\n" +
