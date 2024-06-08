@@ -126,9 +126,9 @@
               </div>
 
               <%
-                  String cursos = "SELECT * FROM curso";
-                  PreparedStatement psSql = conn.prepareStatement(cursos);
-                  ResultSet rsSql = psSql.executeQuery();
+                  sql = "SELECT * FROM curso";
+                  psSql = conn.prepareStatement(sql);
+                  rsSql = psSql.executeQuery();
 
                   int count = 3;
                   while(rsSql.next()){

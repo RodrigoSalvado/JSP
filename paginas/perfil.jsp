@@ -196,8 +196,8 @@
                                     "<a href='gerirDados.jsp?utilizador=1&id_utilizador="+id+"'>" +
                                         "<button>Gerir dados pessoais</button><br>" +
                                     "</a>" +
-                                    "<a href='gestaoCursos.jsp'>" +
-                                        "<button>Gerir Cursos Inscritos</button><br>" +
+                                    "<a href='gestaoInscricoes.jsp'>" +
+                                        "<button>Gerir Inscrições</button><br>" +
                                     "</a>" +
                                 "</div>");
                 }%>

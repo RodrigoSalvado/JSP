@@ -1,26 +1,28 @@
-<?php
-include "../basedados/basedados.h";
-include "ConstUtilizadores.php";
-global $conn;
-session_start();
+<%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="../basedados/basedados.h" %>
+<%
+        String user = (String) session.getAttribute("username");
+        int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
-$tipo = $_SESSION["tipo"];
-if($tipo == CLIENTE || empty($tipo)){
-    echo "<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.php';</script>";
-}
+        if(tipo == 1 || tipo == 0 ){
+            out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
+        }
 
+        int id_curso = request.getParameter("id") == null? 0: Integer.parseInt(request.getParameter("id"));
 
-$id_curso = $_GET["id"];
+        sql = "SELECT * FROM curso WHERE id_curso = "+ id_curso +";";
+        psSql = conn.prepareStatement(sql);
+        rsSql = psSql.executeQuery();
 
-$sql = "SELECT docente, nome FROM curso WHERE id_curso = '$id_curso'";
-$result = mysqli_query($conn, $sql);
-if($result && mysqli_num_rows($result) > 0){
-    while($row = mysqli_fetch_assoc($result)){
-        $docente = $row["docente"];
-        $nome = $row["nome"];
-    }
-}
-?>
+        rsSql.next();
+
+        String docente = rsSql.getString("docente");
+        String nome = rsSql.getString("nome");
+
+%>
+
 
 
 <!DOCTYPE html>
@@ -73,7 +75,7 @@ if($result && mysqli_num_rows($result) > 0){
     <header class="header_section">
         <div class="container-fluid">
             <nav class="navbar navbar-expand-lg custom_nav-container ">
-                <a class="navbar-brand" href="paginaPrincipal.php">
+                <a class="navbar-brand" href="paginaPrincipal.jsp">
             <span>
               Crypto Academy
             </span>
@@ -86,13 +88,13 @@ if($result && mysqli_num_rows($result) > 0){
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav  ">
                         <li class="nav-item active">
-                            <a class="nav-link" href="paginaPrincipal.php">Home <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="paginaPrincipal.jsp">Home <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="about.html"> About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="cursos.php">Cursos</a>
+                            <a class="nav-link" href="cursos.jsp">Cursos</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="why.html">Why Us</a>
@@ -101,24 +103,20 @@ if($result && mysqli_num_rows($result) > 0){
                             <a class="nav-link" href="team.html">Team</a>
                         </li>
 
-                        <?php
-                        if(isset($_SESSION["user"])){
-                            echo '
-                                <li class="nav-item">
-                                    <a class="nav-link" href="perfil.php">Perfil-'.$_SESSION["user"].'</a>
-                                </li>
-                             ';
-                        }
-                        ?>
+                        <%
+                            if(user != null){
+                                out.println("<li class='nav-item'><a class='nav-link' href='perfil.jsp'>Perfil-"+user+"</a></li>");
+                            }
+                        %>
 
                         <li class="nav-item">
-                            <?php
-                            if(isset($_SESSION["user"])){
-                                echo '<a class="nav-link" href="logout.php"> <i class="fa fa-user" aria-hidden="true"></i> Logout</a>';
-                            }else{
-                                echo '<a class="nav-link" href="login.html"> <i class="fa fa-user" aria-hidden="true"></i> Login</a>';
-                            }
-                            ?>
+                            <%
+                                if(user != null){
+                                    out.println("<a class='nav-link' href='logout.jsp'><i class='fa fa-user' aria-hidden='true'></i> Logout</a>");
+                                }else{
+                                    out.println("<a class='nav-link' href='login.html'><i class='fa fa-user' aria-hidden='true'></i> Login</a>");
+                                }
+                            %>
                         </li>
                         <form class="form-inline">
                             <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
@@ -136,13 +134,14 @@ if($result && mysqli_num_rows($result) > 0){
 <div class="container-inscricao">
     <div class="informacoes">
         <form action="inscrever.php" method="post">
-            <input type="hidden" name="nome" value="<?php echo $nome?>">
+            <%out.println("<input type=\"hidden\" name=\"nome\" value=\""+id_curso+"\">");%>
             <br>
             <h3>Solicitar inscrição no curso de <br><span style="color: #0F054CFF;"><?php echo $nome ?></span></h3>
             <br><br>
             <div>
-                <p>Ao realizar este questionário informa que pretende <br> realizar a inscriçao no curso de (nome do curso)<br>E irá usufruir do mesmo de forma séria e assídua.<br>As vagas são altamente limitadas!</p>
-                <label>Docente: <?php echo $docente ?></label><br>
+                <%out.println("<p>Ao realizar este questionário informa que pretende <br> realizar a inscriçao no curso de "+ nome +" "+
+                        "<br>E irá usufruir do mesmo de forma séria e assídua.<br>As vagas são altamente limitadas!</p>");%>
+                <%out.println("<label>Docente: "+ docente +" </label><br>");%>
 
             </div>
 
@@ -273,6 +272,6 @@ if($result && mysqli_num_rows($result) > 0){
 
 </html>
 
-<?php
-
-mysqli_close($conn);
+<%
+conn.close();
+%>
