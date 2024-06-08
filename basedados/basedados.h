@@ -9,4 +9,6 @@ String sql = null;
 PreparedStatement psSql = null;
 ResultSet rsSql = null;
 
+int rowsAffected = 0;
+
 %>

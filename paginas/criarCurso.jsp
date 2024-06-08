@@ -304,7 +304,7 @@
         }else{
             sql = "INSERT INTO curso(docente, nome, descricao, max_num) VALUES ('"+docente+"', '"+nome+"', '"+descricao+"', '"+max_num+"')";
             psSql = conn.prepareStatement(sql);
-            int rowsAffected = psSql.executeUpdate();
+            rowsAffected = psSql.executeUpdate();
 
             if(rowsAffected > 0){
                 out.println("<script>window.alert('Curso Criado') ; window.location.href = 'gestaoCursos.jsp';</script>");
