@@ -4,9 +4,20 @@
     String user = (String) session.getAttribute("username");
     int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
-    if(tipo == 1 || tipo == 0){
+    if(tipo == 1 || tipo == 0 || tipo == 2){
         out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
     }
+
+    int id_curso = request.getParameter("id_curso") == null? -1: Integer.parseInt(request.getParameter("id_curso"));
+
+    sql = "SELECT * FROM curso WHERE id_curso = "+id_curso+";";
+    psSql = conn.prepareStatement(sql);
+    rsSql = psSql.executeQuery();
+
+    rsSql.next();
+
+    String nome = rsSql.getString("nome");
+
 %>
 
 
@@ -123,157 +134,59 @@
 
 <div class="heading_container heading_center" style="margin-top: 80px">
     <h2>
-        Gestão de Inscrições <span></span>
+        Inscrição de Utilizadores para o Curso<br> <%=nome%> <span></span>
     </h2>
     <div class="container">
         <table class="table table-primary table-sortable" role="grid">
+
                 <%
 
-                    switch(tipo){
-                        case 4:
-                            out.println("<thead>\n" +
+
+
+
+                    out.println("<thead>\n" +
 "                                <tr>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Curso</span></th>\n" +
+"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Inscrever</span></th>\n" +
 "                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Utilizador</span></th>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Estado</span></th>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Aceitar</span></th>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Recusar</span></th>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Expulsar</span></th>\n" +
 "                                </tr>\n" +
 "                            </thead>\n" +
 "                            <tbody>\n" +
 "                            <div class=\"botoes_gest\">");
 
-                            sql = "SELECT u.username, uc.id_utilizador, uc.id_curso, c.nome, uc.aceite FROM util_curso uc " +
-                             "JOIN utilizador u ON uc.id_utilizador = u.id_utilizador JOIN curso c ON uc.id_curso = c.id_curso";
+                            sql = "SELECT id_utilizador, username FROM utilizador WHERE id_utilizador NOT IN " +
+                             "(SELECT uc.id_utilizador FROM util_curso uc WHERE uc.id_curso = "+ id_curso+") AND username NOT IN " +
+                              "(SELECT docente FROM curso WHERE id_curso = "+id_curso+");\n";
+
                             psSql = conn.prepareStatement(sql);
                             rsSql = psSql.executeQuery();
+                            %>
+                    <form action="inscreverUsers.jsp?id_curso=<%=id_curso%>" method="post">
 
+                            <%
                             while(rsSql.next()){
-                                String nome = rsSql.getString("nome");
                                 String username = rsSql.getString("username");
-                                int aceite = rsSql.getInt("aceite");
                                 int id_utilizador = rsSql.getInt("id_utilizador");
-                                int id_curso = rsSql.getInt("id_curso");
-                                String estado = aceite == 0? "Por aceitar": "Aceite";
-
-                                if(aceite == 0){
-                                        out.println("<tr>\n" +
-"                                                    <td class='text-center'>"+ nome +"</td>\n" +
-"                                                    <td class='text-center'>"+ username +"</td>\n" +
-"                                                    <td class='text-center'>"+ estado +"</td>\n" +
-"                                                    <td class='text-center'><a href='validarInscricao.jsp?id_utilizador="+id_utilizador+"&validar=1&curso="+id_curso+"'><button>Aceitar</button></a></td>\n" +
-"                                                    <td class='text-center'><a href='validarInscricao.jsp?id_utilizador="+ id_utilizador +"&curso="+id_curso+"'><button>Recusar</button></a></td>\n" +
-"                                                    <td class='text-center'>/</td>\n" +
-"                                                </tr>");
-                                }else{
-                                    out.println("<tr>\n" +
-"                                                    <td class='text-center'>"+ nome +"</td>\n" +
-"                                                    <td class='text-center'>"+ username +"</td>\n" +
-"                                                    <td class='text-center'>"+ estado +"</td>\n" +
-"                                                    <td class='text-center'>/</td>\n" +
-"                                                    <td class='text-center'>/</td>\n" +
-"                                                    <td class='text-center'><a href='validarInscricao.jsp?id_utilizador="+ id_utilizador +"&curso="+id_curso+"'><button>Expulsar</button></a></td>\n" +
-"                                                </tr>");
-                                }
-
-                            }
-                            break;
-                       case 3:
-                            out.println("<thead>\n" +
-"                                <tr>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Curso</span></th>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Utilizador</span></th>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Estado</span></th>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Aceitar</span></th>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Recusar</span></th>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Expulsar</span></th>\n" +
-"                                </tr>\n" +
-"                            </thead>\n" +
-"                            <tbody>\n" +
-"                            <div class=\"botoes_gest\">");
-
-                            sql = "SELECT u.username, uc.id_utilizador, uc.id_curso, c.nome, uc.aceite FROM util_curso uc " +
-                             "JOIN utilizador u ON uc.id_utilizador = u.id_utilizador JOIN curso c ON uc.id_curso = c.id_curso" +
-                             " WHERE c.docente = "+ user +";";
-                            psSql = conn.prepareStatement(sql);
-                            rsSql = psSql.executeQuery();
-
-                            while(rsSql.next()){
-                                String nome = rsSql.getString("nome");
-                                String username = rsSql.getString("username");
-                                int aceite = rsSql.getInt("aceite");
-                                int id_utilizador = rsSql.getInt("id_utilizador");
-                                int id_curso = rsSql.getInt("id_curso");
-                                String estado = aceite == 0? "Por aceitar": "Aceite";
-
-                                if(aceite == 0){
-                                        out.println("<tr>\n" +
-"                                                    <td class='text-center'>"+ nome +"</td>\n" +
-"                                                    <td class='text-center'>"+ username +"</td>\n" +
-"                                                    <td class='text-center'>"+ estado +"</td>\n" +
-"                                                    <td class='text-center'><a href='validarInscricao.jsp?id_utilizador="+id_utilizador+"&validar=1&curso="+id_curso+"'><button>Aceitar</button></a></td>\n" +
-"                                                    <td class='text-center'><a href='validarInscricao.jsp?id_utilizador="+ id_utilizador +"&curso="+id_curso+"'><button>Recusar</button></a></td>\n" +
-"                                                    <td class='text-center'>/</td>\n" +
-"                                                </tr>");
-                                }else{
-                                    out.println("<tr>\n" +
-"                                                    <td class='text-center'>"+ nome +"</td>\n" +
-"                                                    <td class='text-center'>"+ username +"</td>\n" +
-"                                                    <td class='text-center'>"+ estado +"</td>\n" +
-"                                                    <td class='text-center'>/</td>\n" +
-"                                                    <td class='text-center'>/</td>\n" +
-"                                                    <td class='text-center'><a href='validarInscricao.jsp?id_utilizador="+ id_utilizador +"&curso="+id_curso+"'><button>Expulsar</button></a></td>\n" +
-"                                                </tr>");
-                                }
-
-                            }
-                            break;
-                        case 2:
-                            out.println("<thead>\n" +
-"                                <tr>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Curso</span></th>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Estado</span></th>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Desistir</span></th>\n" +
-"                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Detalhes</span></th>\n" +
-"                                </tr>\n" +
-"                            </thead>\n" +
-"                            <tbody>\n" +
-"                            <div class=\"botoes_gest\">");
-
-                            sql = "SELECT uc.id_utilizador, uc.id_curso, c.nome, uc.aceite FROM util_curso uc " +
-                             "JOIN utilizador u ON uc.id_utilizador = u.id_utilizador JOIN curso c ON uc.id_curso = c.id_curso";
-                            psSql = conn.prepareStatement(sql);
-                            rsSql = psSql.executeQuery();
-
-                            while(rsSql.next()){
-                                String nome = rsSql.getString("nome");
-                                int aceite = rsSql.getInt("aceite");
-                                int id_utilizador = rsSql.getInt("id_utilizador");
-                                int id_curso = rsSql.getInt("id_curso");
-                                String estado = aceite == 0? "Por aceitar": "Aceite";
 
                                 out.println("<tr>\n" +
-"                                                    <td class='text-center'>"+ nome +"</td>\n" +
-"                                                    <td class='text-center'>"+ estado +"</td>\n" +
-"                                                    <td class='text-center'><a href='validarInscricao.jsp?id_utilizador="+ id_utilizador +"&curso="+id_curso+"'><button>Desistir</button></a></td>\n" +
-"                                                    <td class='text-center'><a href='gerirDados.jsp?curso=1&id_curso="+ id_curso +"'><button>Detalhes</button></a></td>\n" +
-"                                                </tr>");
+"                                        <td class='text-center'><input type='checkbox' name='utilizadores' value='" + id_utilizador + "'></td>" +
+"                                        <td class='text-center'>"+ username +"</td>\n" +
+"                                    </tr>");
+
 
                             }
-                            break;
 
-                    }
+                            out.println(" </div>\n" +
+"                                        </tbody>\n" +
+"                                    </table><br><br>");
 
-
-                    %>
+                            out.println("<input type=\"submit\" name=\"botao\" value=\"Inscrever Utilizadores\">");
+                            %>
+                    </form>
+<br><br>
 
     </div>
-    </tbody>
-    </table>
 </div>
-</div>
-<br><br><br><br>
+
 
 <!-- end service section -->
 
@@ -398,8 +311,5 @@
 </html>
 
 <%
-
-
-
     conn.close();
 %>

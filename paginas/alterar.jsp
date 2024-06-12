@@ -30,6 +30,8 @@
         String nEmail = request.getParameter("email") == ""? null: request.getParameter("email");
         String nPass = request.getParameter("pass") == ""? null: request.getParameter("pass");
         int nTipo_utilizador = (request.getParameter("tipo_utilizador") == null || request.getParameter("tipo_utilizador") == "")? -1: Integer.parseInt(request.getParameter("tipo_utilizador"));
+        String[] cursos = request.getParameterValues("cursos") == null ? new String[] {"vazio"} : request.getParameterValues("cursos");
+
 
         int id_utilizador = request.getParameter("id")==null? 0: Integer.parseInt(request.getParameter("id"));
 
@@ -52,6 +54,11 @@
                 if(rsSql.next()){
                     out.println("<script>window.alert('Esse username já existe!') ; window.location.href = 'gerirDados.jsp?utilizador=1&id_utilizador="+id_utilizador+"';</script>");
                 }else{
+
+                    sql = "UPDATE curso SET docente = '"+nUsername+"' WHERE docente = (SELECT username FROM utilizador WHERE id_utilizador = "+id_utilizador+");";
+                    psSql = conn.prepareStatement(sql);
+                    psSql.executeUpdate();
+
                     sql = "UPDATE utilizador SET username = '"+nUsername+"' WHERE id_utilizador = "+id_utilizador+";";
                     psSql = conn.prepareStatement(sql);
                     psSql.executeUpdate();
@@ -60,6 +67,7 @@
                         session.setAttribute("username", nUsername);
                     }
 
+                    username = nUsername;
                     alterado = true;
                 }
             }
@@ -95,12 +103,31 @@
                 psSql = conn.prepareStatement(sql);
                 psSql.executeUpdate();
 
+                if(nTipo_utilizador != 3 && nTipo_utilizador != 4){
+                    sql = "UPDATE curso SET docente = '' WHERE docente = (SELECT username FROM utilizador WHERE id_utilizador = "+id_utilizador+")";
+                    psSql = conn.prepareStatement(sql);
+                    psSql.executeUpdate();
+                }
+
                 if(user.equals(username)){
                     session.setAttribute("tipo_utilizador", nTipo_utilizador);
                 }
 
                 alterado = true;
             }
+
+
+            for(String insCurso: cursos){
+                if(!insCurso.equals("vazio")){
+                    int id_curso = Integer.parseInt(insCurso);
+                    sql = "INSERT INTO util_curso (id_utilizador, id_curso, aceite) VALUES ("+id_utilizador+","+id_curso+","+1+")";
+                    psSql = conn.prepareStatement(sql);
+                    psSql.executeUpdate();
+
+                    alterado = true;
+                }
+            }
+
 
             if(alterado){
                 if(tipo == 4 && (!user.equals(username))){
@@ -198,8 +225,6 @@
             }else{
                 out.println("<script>window.alert('Insira algum dado para ser alterado') ; window.location.href = 'gerirDados.jsp?curso=1&id_curso="+id_curso+"';</script>");
             }
-
-
 
         }
 

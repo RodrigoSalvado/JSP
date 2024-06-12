@@ -21,6 +21,7 @@
         String docente = rsSql.getString("docente");
         String nome = rsSql.getString("nome");
 
+
 %>
 
 
@@ -136,7 +137,7 @@
         <form action="inscrever.jsp" method="post">
             <%out.println("<input type=\"hidden\" name=\"curso\" value=\""+id_curso+"\">");%>
             <br>
-            <h3>Solicitar inscrição no curso de <br><span style="color: #0F054CFF;"><?php echo $nome ?></span></h3>
+            <h3>Solicitar inscrição no <%=nome%><br><span style="color: #0F054CFF;"><?php echo $nome ?></span></h3>
             <br><br>
             <div>
                 <%out.println("<p>Ao realizar este questionário informa que pretende <br> realizar a inscriçao no curso de "+ nome +" "+

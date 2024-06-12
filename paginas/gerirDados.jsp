@@ -231,19 +231,21 @@ if(utilizador == 1){
                 out.println("</select>");
 
 
-                sql = "SELECT c.nome FROM curso c WHERE c.id_curso NOT IN (SELECT uc.id_curso FROM util_curso uc WHERE uc.id_utilizador = "+utilizadorAlterar+");";
+                sql = "SELECT c.nome, c.id_curso FROM curso c WHERE c.id_curso NOT IN" +
+                        " (SELECT uc.id_curso FROM util_curso uc WHERE uc.id_utilizador = "+utilizadorAlterar+") AND " +
+                        " docente != (SELECT username FROM utilizador WHERE id_utilizador = "+utilizadorAlterar+");";
+
                 psSql = conn.prepareStatement(sql);
                 rsSql = psSql.executeQuery();
 
-                out.println("                    <br><br>\n" +
-                        "                    <label>Cursos ainda não inscrito: </label>\n" +
-                        "                    <br>\n");
+                out.println("<br><br>\n" +
+                        "<label>Cursos em que não está inscrito: </label>\n" +
+                        "<br>\n");
 
                 while (rsSql.next()) {
                     String nomeCurso = rsSql.getString("nome");
-                    out.println("<label><input type='checkbox' name='cursos' value='" + nomeCurso + "' style=" +
-                            "   border: none;" +
-                            "   color: white;'> " + nomeCurso + "</label><br>");
+                    int id_curso = rsSql.getInt("id_curso");
+                    out.println("<label><input type='checkbox' name='cursos' value='" + id_curso + "'> " + nomeCurso + "</label><br>");
                 }
 
 
@@ -285,8 +287,8 @@ if(curso == 1){
                 "            <br>\n");
 
         out.println(
-                "                    <select name=\"docente\" class=\"inp\">" +
-                        "                       <option></option>");
+                "            <select name=\"docente\" class=\"inp\">" +
+                        "        <option></option>");
 
         while(rsSql.next()){
             if(!rsSql.getString("username").equals(docente)){
@@ -340,6 +342,33 @@ if(curso == 1){
                 "    </div>\n" +
                 "</div>");
     }
+
+    // Aluno
+
+    if(tipo == 2){
+        out.println("<div class=\"container-inscricao\">\n" +
+                "    <div class=\"informacoes\">\n"+
+                "            <br>\n" +
+                "            <h3>Informações do Curso</h3>\n" +
+                "            <br><br>\n" +
+                "            <label>Nome: "+ nome +"</label>\n" +
+                "            <br>\n" +
+                "            <br><br>\n" +
+                "            <label>Docente: "+ docente +"</label>\n" +
+                "            <br>\n" +
+                "            <br><br>\n" +
+                "            <label>Descrição do Curso: "+ descricao +"</label>\n" +
+                "            <br>\n" +
+                "            <br><br>\n" +
+                "            <label>Numero vagas disponiveis: "+ (max_num - inscritos) +"</label><br>\n" +
+                "            <label>Numero inscritos: "+ inscritos +"</label>\n" +
+                "            <br>\n" +
+                "            <br><br>\n" +
+                "    </div>\n" +
+                "</div>");
+    }
+
+
 }
 
 
