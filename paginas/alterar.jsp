@@ -150,6 +150,7 @@
         String nDocente = request.getParameter("docente") == ""? null: request.getParameter("docente");
         String nDesc = request.getParameter("descricao") == ""? null: request.getParameter("descricao");
         int nMax_num = request.getParameter("max_num") == ""? -1: Integer.parseInt(request.getParameter("max_num"));
+        String[] utilizadores = request.getParameterValues("utilizadores") == null ? new String[] {"vazio"} : request.getParameterValues("utilizadores");
 
 
         int id_curso = request.getParameter("id_curso") == null? -1: Integer.parseInt(request.getParameter("id_curso"));
@@ -213,6 +214,17 @@
                     out.println("<script>window.alert('Aumente o limite de inscrições!') ; window.location.href = 'gerirDados.jsp?curso=1&id_curso="+id_curso+"';</script>");
                 }else{
                     sql = "UPDATE curso SET max_num = '"+nMax_num+"' WHERE id_curso = "+id_curso+";";
+                    psSql = conn.prepareStatement(sql);
+                    psSql.executeUpdate();
+
+                    alterado = true;
+                }
+            }
+
+            for(String utilizadorIns: utilizadores){
+                if(!utilizadorIns.equals("vazio")){
+                    int id_utilizador = Integer.parseInt(utilizadorIns);
+                    sql = "DELETE FROM util_curso WHERE id_curso = "+id_curso+" AND id_utilizador = "+id_utilizador+";";
                     psSql = conn.prepareStatement(sql);
                     psSql.executeUpdate();
 

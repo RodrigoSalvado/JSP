@@ -305,8 +305,24 @@ if(curso == 1){
                 "            <label>Numero vagas disponiveis: "+ (max_num - inscritos) +"</label><br>\n" +
                 "            <label>Numero inscritos: "+ inscritos +"</label>\n" +
                 "            <br>\n" +
-                "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\" \n" +
-                "            <br><br><br>\n" +
+                "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\" \n");
+
+                sql = "SELECT u.username, u.id_utilizador FROM utilizador u JOIN util_curso uc ON u.id_utilizador = uc.id_utilizador WHERE uc.id_curso = "+cursoAlterar+";";
+                psSql = conn.prepareStatement(sql);
+                rsSql = psSql.executeQuery();
+
+                out.println("<br><br><br>\n" +
+                        "<label>Utilizadores Inscritos: </label><br>\n" +
+                        "<label>(Selecione para Expulsar do Curso): </label>\n" +
+                        "<br>\n");
+
+                while (rsSql.next()) {
+                    String insUser = rsSql.getString("username");
+                    int id_utilizador = rsSql.getInt("id_utilizador");
+                    out.println("<label><input type='checkbox' name='utilizadores' value='" + id_utilizador + "'> " + insUser + "</label><br>");
+                }
+
+        out.println("            <br><br>\n" +
                 "            <input type=\"submit\" value=\"Alterar Curso\" name=\"botao\">\n" +
                 "            <br><br>\n" +
                 "        </form>\n" +
@@ -334,8 +350,24 @@ if(curso == 1){
                 "            <label>Numero vagas disponiveis: "+ (max_num - inscritos) +"</label><br>\n" +
                 "            <label>Numero inscritos: "+ inscritos +"</label>\n" +
                 "            <br>\n" +
-                "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\">\n" +
-                "            <br><br><br>\n" +
+                "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\">\n");
+
+                        sql = "SELECT u.username, u.id_utilizador FROM utilizador u JOIN util_curso uc ON u.id_utilizador = uc.id_utilizador WHERE uc.id_curso = "+cursoAlterar+";";
+                        psSql = conn.prepareStatement(sql);
+                        rsSql = psSql.executeQuery();
+
+                        out.println("<br><br><br>\n" +
+                                "<label>Utilizadores Inscritos: </label><br>\n" +
+                                "<label>(Selecione para Expulsar do Curso): </label>\n" +
+                                "<br>\n");
+
+                        while (rsSql.next()) {
+                            String insUser = rsSql.getString("username");
+                            int id_utilizador = rsSql.getInt("id_utilizador");
+                            out.println("<label><input type='checkbox' name='utilizadores' value='" + id_utilizador + "'> " + insUser + "</label><br>");
+                        }
+
+        out.println("        <br><br>\n" +
                 "            <input type=\"submit\" value=\"Alterar Curso\" name=\"botao\">\n" +
                 "            <br><br>\n" +
                 "        </form>\n" +
@@ -396,7 +428,7 @@ if(curso == 1){
                         Address
                     </h4>
                     <div class="contact_link_box">
-                        <a href="">
+                        <a href="https://maps.app.goo.gl/Ws5RFJAZ9N5P5Rpv7">
                             <i class="fa fa-map-marker" aria-hidden="true"></i>
                             <span>
                   Location
@@ -405,13 +437,13 @@ if(curso == 1){
                         <a href="">
                             <i class="fa fa-phone" aria-hidden="true"></i>
                             <span>
-                  Call +01 1234567890
+                  Call (+351) 272 339 301
                 </span>
                         </a>
                         <a href="">
                             <i class="fa fa-envelope" aria-hidden="true"></i>
                             <span>
-                  demo@gmail.com
+                  est@ipcb.pt
                 </span>
                         </a>
                     </div>
@@ -447,13 +479,13 @@ if(curso == 1){
                         Links
                     </h4>
                     <div class="info_links">
-                        <a class="active" href="paginaPrincipal.php">
+                        <a class="active" href="paginaPrincipal.jsp">
                             Home
                         </a>
                         <a class="" href="about.html">
                             About
                         </a>
-                        <a class="" href="cursos.php">
+                        <a class="" href="cursos.jsp">
                             Services
                         </a>
                         <a class="" href="why.html">

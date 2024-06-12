@@ -165,7 +165,7 @@
                         Address
                     </h4>
                     <div class="contact_link_box">
-                        <a href="">
+                        <a href="https://maps.app.goo.gl/Ws5RFJAZ9N5P5Rpv7">
                             <i class="fa fa-map-marker" aria-hidden="true"></i>
                             <span>
                   Location
@@ -174,13 +174,13 @@
                         <a href="">
                             <i class="fa fa-phone" aria-hidden="true"></i>
                             <span>
-                  Call +01 1234567890
+                  Call (+351) 272 339 301
                 </span>
                         </a>
                         <a href="">
                             <i class="fa fa-envelope" aria-hidden="true"></i>
                             <span>
-                  demo@gmail.com
+                  est@ipcb.pt
                 </span>
                         </a>
                     </div>
@@ -216,13 +216,13 @@
                         Links
                     </h4>
                     <div class="info_links">
-                        <a class="active" href="paginaPrincipal.php">
+                        <a class="active" href="paginaPrincipal.jsp">
                             Home
                         </a>
                         <a class="" href="about.html">
                             About
                         </a>
-                        <a class="" href="cursos.php">
+                        <a class="" href="cursos.jsp">
                             Services
                         </a>
                         <a class="" href="why.html">
