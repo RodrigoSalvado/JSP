@@ -323,6 +323,6 @@
 
     </html>
 
-<?php
-
-mysqli_close($conn);
+<%
+    conn.close();
+%>

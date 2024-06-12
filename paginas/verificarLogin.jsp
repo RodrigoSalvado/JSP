@@ -23,7 +23,7 @@
         out.println("<script>window.alert('Dados inválidos!'); window.location.href = './login.html'</script>");
     }
 
-
+    conn.close();
 %>
 
 

@@ -22,4 +22,6 @@
     }
 
     out.println("<script>window.alert('Utilizadores foram inscritos!') ; window.location.href = 'inscreverUtilizador.jsp?id_curso="+id_curso+"';</script>");
+
+    conn.close();
 %>
