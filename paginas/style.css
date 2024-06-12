@@ -1057,14 +1057,14 @@ a:focus {
   background: linear-gradient(130deg, #231a6f, #0f054c);
   border: none;
   color: white;
-  width: 50%;
-  height: 10vh;
+
 }
 
 /*-----------gerirDados-------------*/
 .informacoes .inp{
   height: 5vh;
   padding: 10px;
+  width: 50%;
 }
 .informacoes .inp::placeholder{
   color: white;

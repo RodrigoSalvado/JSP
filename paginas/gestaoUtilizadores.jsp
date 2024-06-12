@@ -1,17 +1,13 @@
-<?php
-global $conn;
-include "../basedados/basedados.h";
-include "ConstUtilizadores.php";
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="../basedados/basedados.h" %>
+<%
+    String user = (String) session.getAttribute("username");
+    int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
-session_start();
-
-$user = $_SESSION["user"];
-$tipo = $_SESSION["tipo"];
-if($tipo != ADMINISTRADOR || empty($tipo)){
-    echo "<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.php';</script>";
-}
-
-?>
+    if(tipo != 4 ){
+        out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
+    }
+%>
 
 
     <!DOCTYPE html>
@@ -77,13 +73,13 @@ if($tipo != ADMINISTRADOR || empty($tipo)){
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav  ">
                             <li class="nav-item active">
-                                <a class="nav-link" href="paginaPrincipal.php">Home <span class="sr-only">(current)</span></a>
+                                <a class="nav-link" href="paginaPrincipal.jsp">Home <span class="sr-only">(current)</span></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="about.html"> About</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="cursos.php">Cursos</a>
+                                <a class="nav-link" href="cursos.jsp">Cursos</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="why.html">Why Us</a>
@@ -92,24 +88,20 @@ if($tipo != ADMINISTRADOR || empty($tipo)){
                                 <a class="nav-link" href="team.html">Team</a>
                             </li>
 
-                            <?php
-                            if(isset($_SESSION["user"])){
-                                echo '
-                                <li class="nav-item">
-                                    <a class="nav-link" href="perfil.php">Perfil-'.$_SESSION["user"].'</a>
-                                </li>
-                             ';
-                            }
-                            ?>
+                            <%
+                                if (user != null) {
+                                    out.println("<li class='nav-item'><a class='nav-link' href='perfil.jsp'>Perfil-" + user + "</a></li>");
+                                }
+                            %>
 
                             <li class="nav-item">
-                                <?php
-                                if(isset($_SESSION["user"])){
-                                    echo '<a class="nav-link" href="logout.php"> <i class="fa fa-user" aria-hidden="true"></i> Logout</a>';
-                                }else{
-                                    echo '<a class="nav-link" href="login.html"> <i class="fa fa-user" aria-hidden="true"></i> Login</a>';
-                                }
-                                ?>
+                                <%
+                                    if (user != null) {
+                                        out.println("<a class='nav-link' href='logout.jsp'><i class='fa fa-user' aria-hidden='true'></i> Logout</a>");
+                                    } else {
+                                        out.println("<a class='nav-link' href='login.html'><i class='fa fa-user' aria-hidden='true'></i> Login</a>");
+                                    }
+                                %>
                             </li>
                             <form class="form-inline">
                                 <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
@@ -146,66 +138,65 @@ if($tipo != ADMINISTRADOR || empty($tipo)){
                 </thead>
                 <tbody>
                 <div class="botoes_gest">
-                    <?php
+                    <%
 
-                        $sql = "SELECT username, tipo_utilizador, id_utilizador FROM utilizador WHERE username != '$user'";
-                        $result = mysqli_query($conn, $sql);
+                        sql = "SELECT username, tipo_utilizador, id_utilizador FROM utilizador WHERE username != '"+user+"'";
+                        psSql = conn.prepareStatement(sql);
+                        rsSql = psSql.executeQuery();
 
-                        if(mysqli_num_rows($result)>0){
-                            while($row = mysqli_fetch_assoc($result)){
+                        while(rsSql.next()){
 
-                                $utilizador = $row["username"];
-                                $tipo_utilizador = $row["tipo_utilizador"];
-                                $id_utilizador = $row["id_utilizador"];
+                            String utilizador = rsSql.getString("username");
+                            int tipo_utilizador = Integer.parseInt(rsSql.getString("tipo_utilizador"));
+                            int id_utilizador =  Integer.parseInt(rsSql.getString("id_utilizador"));
 
-                                switch ($tipo_utilizador){
-                                    case ADMINISTRADOR:
-                                        $tipo = "Administrador";
+                            String aux = null;
+
+                                switch (tipo_utilizador){
+                                    case 4:
+                                        aux = "Administrador";
                                         break;
-                                    case DOCENTE:
-                                        $tipo = "Docente";
+                                    case 3:
+                                        aux = "Docente";
                                         break;
-                                    case ALUNO:
-                                        $tipo = "Aluno";
+                                    case 2:
+                                        aux = "Aluno";
                                         break;
-                                    case CLIENTE:
-                                        $tipo = "Cliente";
+                                    case 1:
+                                        aux = "Cliente";
                                         break;
                                 }
 
-                                if($tipo_utilizador == CLIENTE){
-                                    echo "
-                                    <tr>
-                                        <td class='text-center'>$utilizador</td>
-                                        <td class='text-center'>$tipo</td>
-                                        <td class='text-center'><a href='promocao.php?promover=1&id=$id_utilizador'><button>Promover</button></a></td>
-                                        <td class='text-center'>/</td>
-                                        <td class='text-center'><a href='apagar.php?user=$utilizador'><button>Apagar</button></a></td>
-                                        <td class='text-center'>/</td>
-                                    </tr>
-                                ";
+                                if(tipo_utilizador == 1){
+                                    out.println("<tr>\n" +
+                                            "<td class='text-center'>"+utilizador+"</td>\n" +
+                                            "<td class='text-center'>"+aux+"</td>\n" +
+                                            "<td class='text-center'><a href='promocao.jsp?promover=1&id="+id_utilizador+"'><button>Promover</button></a></td>\n" +
+                                            "<td class='text-center'>/</td>\n" +
+                                            "<td class='text-center'><a href='apagar.jsp?id_utilizador="+utilizador+"'><button>Apagar</button></a></td>\n" +
+                                            "<td class='text-center'>/</td>\n" +
+                                            "</tr>");
                                 }else{
-                                    echo "
-                                    <tr>
-                                        <td class='text-center'>$utilizador</td>
-                                        <td class='text-center'>$tipo</td>
-                                        <td class='text-center'><a href='promocao.php?promover=1&id=$id_utilizador'><button>Promover</button></a></td>
-                                        <td class='text-center'><a href='promocao.php?promover=0&id=$id_utilizador'><button>Despromover</button></a></td>
-                                        <td class='text-center'><a href='apagar.php?user=$utilizador'><button>Apagar</button></a></td>
-                                        <td class='text-center'><a href='gerirDados.php?id=".$id_utilizador."&utilizador=1'><button>Detalhes</button></a></td>
-                                    </tr>
-                                ";
+                                    out.println("<tr>\n" +
+                                            "<td class='text-center'>"+utilizador+"</td>\n" +
+                                            "<td class='text-center'>"+aux+"</td>\n" +
+                                            "<td class='text-center'><a href='promocao.jsp?promover=1&id="+id_utilizador+"'><button>Promover</button></a></td>\n" +
+                                            "<td class='text-center'><a href='promocao.jsp?promover=0&id="+id_utilizador+"'><button>Despromover</button></a></td>\n" +
+                                            "<td class='text-center'><a href='apagar.jsp?id_utilizador="+id_utilizador+"'><button>Apagar</button></a></td>\n" +
+                                            "<td class='text-center'><a href='gerirDados.jsp?id_utilizador="+id_utilizador+"&utilizador=1'><button>Detalhes</button></a></td>\n" +
+                                            "</tr>");
                                 }
-                            }
+
                         }
 
 
 
-                    ?>
+                    %>
 
         </div>
         </tbody>
         </table>
+            <%out.println("<a href=\"criarUtilizador.jsp\"><button class=\"btn-curso\" style=\"margin: 20px\">Criar Utilizador</button></a>");%>
     </div>
     </div>
 

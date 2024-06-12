@@ -145,9 +145,11 @@
 "                            </thead>\n" +
 "                            <tbody>\n" +
 "                            <div class=\"botoes_gest\">");
-                                             //Admin
-                            sql = tipo == 4? "SELECT c.nome, c.id_curso, c.docente, c.max_num, COUNT(uc.id_inscricao) " +
-                                             "AS inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso GROUP BY c.id_curso":
+
+                            sql = tipo == 4?
+                            //Admin
+                             "SELECT c.nome, c.id_curso, c.docente, c.max_num, COUNT(uc.id_inscricao) " +
+                             "AS inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso GROUP BY c.id_curso":
                             //Docente
                             "SELECT c.nome, c.id_curso, c.docente, c.max_num, COUNT(uc.id_inscricao)" +
                             " inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso WHERE c.docente = '"+ user +"' GROUP BY c.id_curso";
@@ -166,7 +168,7 @@
 "                                        <td class='text-center'>"+ docente +"</td>\n" +
 "                                        <td class='text-center'>"+ vagasCurso +"</td>\n" +
 "                                        <td class='text-center'>"+ (vagasCurso - inscritos) +"</td>\n" +
-"                                        <td class='text-center'><a href='apagar.jsp?curso="+ id_curso +"'><button>Apagar</button></a></td>\n" +
+"                                        <td class='text-center'><a href='apagar.jsp?id_curso="+ id_curso +"'><button>Apagar</button></a></td>\n" +
 "                                        <td class='text-center'><a href='gerirDados.jsp?curso=1&id_curso="+ id_curso +"'><button>Detalhes</button></a></td>\n" +
 "                                        <td class='text-center'><a href='inscreverUtilizador.jsp?id_curso="+ id_curso +"'><button>Inscrever</button></a></td>\n" +
 "                                    </tr>");

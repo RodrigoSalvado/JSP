@@ -13,28 +13,26 @@
     // Inicialização de variaveis para alteração de dados de um utilizador
     int curso = request.getParameter("curso")==null? 0: Integer.parseInt(request.getParameter("curso"));
 
-    // vai buscar os valores dos inputs
-    String nNome = request.getParameter("nome") == ""? null: request.getParameter("nome");
-    String nDocente = request.getParameter("docente") == ""? null: request.getParameter("docente");
-    String nDesc = request.getParameter("descricao") == ""? null: request.getParameter("descricao");
-    int nMax_num = request.getParameter("max_num") == ""? -1: Integer.parseInt(request.getParameter("max_num"));
+
 
 
     // Inicialização de variaveis para alteração de dados de um utilizador
 
     int utilizador = request.getParameter("utilizador")==null? 0: Integer.parseInt(request.getParameter("utilizador"));
 
-    // vai buscar os valores dos inputs
-    String nUsername = request.getParameter("username") == ""? null: request.getParameter("username");
-    String nEmail = request.getParameter("email") == ""? null: request.getParameter("email");
-    String nPass = request.getParameter("pass") == ""? null: request.getParameter("pass");
-    int nTipo_utilizador = request.getParameter("tipo_utilizador") == null? -1: Integer.parseInt(request.getParameter("tipo_utilizador"));
+
 
 
     if(utilizador == 1){
 
+        // vai buscar os valores dos inputs
+        String nUsername = request.getParameter("username") == ""? null: request.getParameter("username");
+        String nEmail = request.getParameter("email") == ""? null: request.getParameter("email");
+        String nPass = request.getParameter("pass") == ""? null: request.getParameter("pass");
+        int nTipo_utilizador = (request.getParameter("tipo_utilizador") == null || request.getParameter("tipo_utilizador") == "")? -1: Integer.parseInt(request.getParameter("tipo_utilizador"));
+
         int id_utilizador = request.getParameter("id")==null? 0: Integer.parseInt(request.getParameter("id"));
-        out.println(id_utilizador+"<br>");
+
 
         sql = "SELECT * FROM utilizador WHERE id_utilizador = "+ id_utilizador +";";
         psSql = conn.prepareStatement(sql);
@@ -119,6 +117,13 @@
     }
 
     if(curso == 1){
+
+        // vai buscar os valores dos inputs
+        String nNome = request.getParameter("nome") == ""? null: request.getParameter("nome");
+        String nDocente = request.getParameter("docente") == ""? null: request.getParameter("docente");
+        String nDesc = request.getParameter("descricao") == ""? null: request.getParameter("descricao");
+        int nMax_num = request.getParameter("max_num") == ""? -1: Integer.parseInt(request.getParameter("max_num"));
+
 
         int id_curso = request.getParameter("id_curso") == null? -1: Integer.parseInt(request.getParameter("id_curso"));
 

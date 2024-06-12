@@ -2,84 +2,15 @@
 <%@ include file="../basedados/basedados.h" %>
 <%
     String user = (String) session.getAttribute("username");
-    int tipo = session.getAttribute("tipo_utilizador") == null ? 0 : (Integer) session.getAttribute("tipo_utilizador");
+    int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
-    if (tipo == 1 || tipo == 0) {
+    if(tipo != 4){
         out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
     }
 
 
-    int utilizador = request.getParameter("utilizador") == null ? 0 : 1;
-    int curso = request.getParameter("curso") == null ? 0 : 1;
-
-
-    int utilizadorAlterar = request.getParameter("id_utilizador") == null ? 0 : Integer.parseInt(request.getParameter("id_utilizador"));
-    int cursoAlterar = request.getParameter("id_curso") == null ? 0 : Integer.parseInt(request.getParameter("id_curso"));
-
-
-    String username = null;
-    String email = null;
-    String password = null;
-    int tipo_utilizador = 0;
-    String cargo=null;
-
-
-    if (utilizador == 1) {
-        sql = "SELECT * FROM utilizador WHERE id_utilizador = '" + utilizadorAlterar + "'";
-        psSql = conn.prepareStatement(sql);
-        rsSql = psSql.executeQuery();
-
-        rsSql.next();
-
-        username = rsSql.getString("username");
-        email = rsSql.getString("email");
-        password = rsSql.getString("password");
-        tipo_utilizador = rsSql.getInt("tipo_utilizador");
-
-        switch(tipo_utilizador){
-            case 2:
-                cargo= "Aluno";
-                break;
-            case 3:
-                cargo= "Docente";
-                break;
-            case 4:
-                cargo= "Administrador";
-                break;
-            default:
-                cargo= "Desconhecido";
-                break;
-        }
-    }
-
-    String nome = null;
-    String descricao = null;
-    String docente = null;
-    int max_num = 0;
-    int inscritos = 0;
-
-    if (curso == 1) {
-        sql = "SELECT * FROM curso WHERE id_curso = '" + cursoAlterar + "'";
-        psSql = conn.prepareStatement(sql);
-        rsSql = psSql.executeQuery();
-
-        rsSql.next();
-
-        nome = rsSql.getString("nome");
-        docente = rsSql.getString("docente");
-        descricao = rsSql.getString("descricao");
-        max_num = rsSql.getInt("max_num");
-
-        sql = "SELECT COUNT(*) as inscritos FROM util_curso WHERE id_curso = '" + cursoAlterar + "'";
-        psSql = conn.prepareStatement(sql);
-        rsSql = psSql.executeQuery();
-        rsSql.next();
-
-        inscritos = rsSql.getInt("inscritos");
-    }
-
-
 %>
+
 
 <!DOCTYPE html>
 <html>
@@ -131,7 +62,7 @@
     <header class="header_section">
         <div class="container-fluid">
             <nav class="navbar navbar-expand-lg custom_nav-container ">
-                <a class="navbar-brand" href="paginaPrincipal.php">
+                <a class="navbar-brand" href="paginaPrincipal.jsp">
             <span>
               Crypto Academy
             </span>
@@ -160,16 +91,16 @@
                         </li>
 
                         <%
-                            if (user != null) {
-                                out.println("<li class='nav-item'><a class='nav-link' href='perfil.jsp'>Perfil-" + user + "</a></li>");
+                            if(user != null){
+                                out.println("<li class='nav-item'><a class='nav-link' href='perfil.jsp'>Perfil-"+user+"</a></li>");
                             }
                         %>
 
                         <li class="nav-item">
                             <%
-                                if (user != null) {
+                                if(user != null){
                                     out.println("<a class='nav-link' href='logout.jsp'><i class='fa fa-user' aria-hidden='true'></i> Logout</a>");
-                                } else {
+                                }else{
                                     out.println("<a class='nav-link' href='login.html'><i class='fa fa-user' aria-hidden='true'></i> Login</a>");
                                 }
                             %>
@@ -191,169 +122,55 @@
 
 <%
 
-if(utilizador == 1){
-
-    sql = "SELECT * FROM tipo_utilizador";
-    psSql = conn.prepareStatement(sql);
-    rsSql = psSql.executeQuery();
-
 
 
     out.println("<div class=\"container-inscricao\">\n" +
             "            <div class=\"informacoes\">\n" +
-            "                <form action=\"alterar.jsp?utilizador=" + utilizador + "&id="+utilizadorAlterar+"\" method=\"post\" >\n" +
+            "                <form action=\"\" method=\"post\" >\n" +
             "                    <br>\n" +
-            "                    <h3>Alterar informações pessoais</h3>\n" +
+            "                    <h3>Criar Utilizador</h3>\n" +
             "                    <br><br>\n" +
-            "                    <label>Username:  " + username + " </label>\n" +
+            "                    <label>Nome: </label>\n" +
             "                    <br>\n" +
-            "                    <input type=\"text\" name=\"username\" placeholder=\"Novo username\" class=\"inp\">\n" +
-            "                    <br><br>\n" +
-            "                    <label>Email: " + email + "</label>\n" +
-            "                    <br>\n" +
-            "                    <input type=\"email\" name=\"email\" placeholder=\"Novo email\"  class=\"inp\">\n");
+            "                    <input type=\"text\" name=\"username\" placeholder=\"Nome do utilizador...\" class=\"inp\" required>\n");
 
-            // vê se é o admin e faz a logica do select para os cargos
-            if(tipo == 4){
 
-                // escolher o cargo
                 out.println("                    <br><br>\n" +
-                            "                    <label>Tipo Utilizador: " + cargo + "</label>\n" +
-                            "                    <br>\n" +
-                            "                    <select name=\"tipo_utilizador\" class=\"inp\">" +
-                            "                       <option></option>");
+                        "                    <label>Tipo Utilizador:</label>\n" +
+                        "                    <br>\n" +
+                        "                    <select name=\"cargo\" class=\"inp\">" +
+                        "                       <option></option>");
+
+                sql = "SELECT * FROM tipo_utilizador";
+                psSql = conn.prepareStatement(sql);
+                rsSql = psSql.executeQuery();
 
                 while(rsSql.next()){
-                    if(rsSql.getInt("id") != tipo_utilizador && rsSql.getInt("id")!= 5){
+                    if(rsSql.getInt("id")!= 5){
                         out.println("<option value=\""+rsSql.getInt("id")+"\">"+rsSql.getString("cargo")+"</option>");
                     }
                 }
                 out.println("</select>");
 
 
-                sql = "SELECT c.nome FROM curso c WHERE c.id_curso NOT IN (SELECT uc.id_curso FROM util_curso uc WHERE uc.id_utilizador = "+utilizadorAlterar+");";
-                psSql = conn.prepareStatement(sql);
-                rsSql = psSql.executeQuery();
-
-                out.println("                    <br><br>\n" +
-                        "                    <label>Cursos ainda não inscrito: </label>\n" +
-                        "                    <br>\n");
-
-                while (rsSql.next()) {
-                    String nomeCurso = rsSql.getString("nome");
-                    out.println("<label><input type='checkbox' name='cursos' value='" + nomeCurso + "' style=" +
-                            "   border: none;" +
-                            "   color: white;'> " + nomeCurso + "</label><br>");
-                }
-
-
-            }
-
-    out.println(
+    out.println("</select>\n" +
             "                    <br><br>\n" +
-            "                    <label>Password: " + password + " </label>\n" +
+            "                    <label>Email:</label>\n" +
             "                    <br>\n" +
-            "                    <input type=\"text\" name=\"pass\" placeholder=\"Nova password\"   class=\"inp\">\n" +
+            "                    <input type=\"email\" placeholder=\"Email do utilizador...\" name=\"email\"  class=\"inp\" required></textarea>\n" +
+            "                    <br><br>\n" +
+            "                    <label>Password:</label>\n" +
+            "                    <br>\n" +
+            "                    <input type=\"text\" placeholder=\"Password do utilizador...\" name = \"password\" class=\"inp\" required></textarea>\n" +
             "                    <br><br><br>\n" +
-            "                    <input type=\"submit\" value=\"Alterar dados\" name=\"botao\" class=\"inp\">\n" +
+            "                    <input type=\"submit\" value=\"Criar Utilizador\" name=\"botao\">\n" +
             "                    <br><br>\n" +
             "                </form>\n" +
             "            </div>\n" +
             "        </div>");
 
-}
-
-if(curso == 1){
-
-    // Admin
-    if(tipo == 4){
-        sql = "SELECT * FROM utilizador WHERE tipo_utilizador = 3 OR tipo_utilizador = 4";
-        psSql = conn.prepareStatement(sql);
-        rsSql = psSql.executeQuery();
-
-        out.println("<div class=\"container-inscricao\">\n" +
-                "    <div class=\"informacoes\">\n" +
-                "        <form action=\"alterar.jsp?curso=1&id_curso="+cursoAlterar+"\" method=\"post\" >\n" +
-                "            <br>\n" +
-                "            <h3>Alterar Informações do Curso</h3>\n" +
-                "            <br><br>\n" +
-                "            <label>Nome: "+ nome +"</label>\n" +
-                "            <br>\n" +
-                "            <input type=\"text\" name=\"nome\" placeholder=\"Nome do curso...\" class=\"inp\">\n" +
-                "            <br><br>\n" +
-                "            <label>Docente: "+ docente +"</label>\n" +
-                "            <br>\n");
-
-        out.println(
-                "                    <select name=\"docente\" class=\"inp\">" +
-                        "                       <option></option>");
-
-        while(rsSql.next()){
-            if(!rsSql.getString("username").equals(docente)){
-                out.println("<option value=\""+rsSql.getString("username")+"\">"+rsSql.getString("username")+"</option>");
-            }
-        }
-        out.println("</select>");
-
-        out.println("            <br><br>\n" +
-                "            <label>Descrição do Curso:</label>\n" +
-                "            <br>\n" +
-                "            <textarea type=\"text\" name=\"descricao\" placeholder=\"Descrição do curso...\" class=\"inp\"></textarea>\n" +
-                "            <br><br>\n" +
-                "            <label>Numero vagas disponiveis: "+ (max_num - inscritos) +"</label><br>\n" +
-                "            <label>Numero inscritos: "+ inscritos +"</label>\n" +
-                "            <br>\n" +
-                "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\" \n" +
-                "            <br><br><br>\n" +
-                "            <input type=\"submit\" value=\"Alterar Curso\" name=\"botao\">\n" +
-                "            <br><br>\n" +
-                "        </form>\n" +
-                "    </div>\n" +
-                "</div>");
-    }
-
-    // Docente
-    if(tipo == 3){
-        out.println("<div class=\"container-inscricao\">\n" +
-                "    <div class=\"informacoes\">\n" +
-                "        <form action=\"alterar.jsp?curso=1&id_curso="+cursoAlterar+"\" method=\"post\" >\n" +
-                "            <br>\n" +
-                "            <h3>Alterar Informações do Curso</h3>\n" +
-                "            <br><br>\n" +
-                "            <label>Nome: "+ nome +"</label>\n" +
-                "            <br>\n" +
-                "            <br><br>\n" +
-                "            <label>Docente: "+ docente +"</label>\n" +
-                "            <br>\n" +
-                "            <br><br>\n" +
-                "            <label>Descrição do Curso: "+ descricao +"</label>\n" +
-                "            <br>\n" +
-                "            <br><br>\n" +
-                "            <label>Numero vagas disponiveis: "+ (max_num - inscritos) +"</label><br>\n" +
-                "            <label>Numero inscritos: "+ inscritos +"</label>\n" +
-                "            <br>\n" +
-                "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\">\n" +
-                "            <br><br><br>\n" +
-                "            <input type=\"submit\" value=\"Alterar Curso\" name=\"botao\">\n" +
-                "            <br><br>\n" +
-                "        </form>\n" +
-                "    </div>\n" +
-                "</div>");
-    }
-}
-
-
 
 %>
-
-
-
-
-
-
-
-
-
 
 
 <!-- info section -->
@@ -474,6 +291,38 @@ if(curso == 1){
 </body>
 
 </html>
+
 <%
-conn.close();
+    String botao = request.getParameter("botao");
+
+    if(botao != null){
+        String username = request.getParameter("username");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        int cargo = Integer.parseInt(request.getParameter("cargo"));
+
+        sql = "SELECT * FROM utilizador WHERE username = '"+ username +"' OR email = '"+ email + "';";
+        psSql = conn.prepareStatement(sql);
+        rsSql = psSql.executeQuery();
+
+        if(rsSql.next()){
+            out.println("<script>window.alert('Já existe um curso com esse username/email!'); window.location.href = 'criarUtilizador.jsp';</script>");
+        }else{
+            sql = "INSERT INTO utilizador(username, password, email, tipo_utilizador) VALUES ('"+username+"', '"+password+"', '"+email+"', "+cargo+")";
+            psSql = conn.prepareStatement(sql);
+            rowsAffected = psSql.executeUpdate();
+
+            if(rowsAffected > 0){
+                out.println("<script>window.alert('Utilizador Criado') ; window.location.href = 'gestaoUtilizadores.jsp';</script>");
+            }else{
+                out.println("<script>window.alert('Erro ao criar utilizador!') ; window.location.href = 'gestaoUtilizadores.jsp';</script>");
+            }
+
+        }
+
+
+    }
+
+    conn.close();
 %>
+

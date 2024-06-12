@@ -146,7 +146,7 @@
             </div>
 
             <br> <br><br>
-            <input type="submit" value="Solicitar inscrição" name="botao">
+            <input type="submit" value="Solicitar inscrição" name="botao" class="inp">
             <br><br>
         </form>
 
