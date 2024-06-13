@@ -4,27 +4,36 @@
     String user = (String) session.getAttribute("username");
     int tipo = session.getAttribute("tipo_utilizador") == null ? 0 : (Integer) session.getAttribute("tipo_utilizador");
 
+    // Protecao da pagina/script
     if (tipo == 1 || tipo == 0) {
         out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
     }
 
-
+    // Cer que tipo de dados estamos a tratar
     int utilizador = request.getParameter("utilizador") == null ? 0 : 1;
     int curso = request.getParameter("curso") == null ? 0 : 1;
 
-
+    // Vai buscar os id's
     int utilizadorAlterar = request.getParameter("id_utilizador") == null ? 0 : Integer.parseInt(request.getParameter("id_utilizador"));
     int cursoAlterar = request.getParameter("id_curso") == null ? 0 : Integer.parseInt(request.getParameter("id_curso"));
 
-
+    // Inicializacao de variaveis relativas ao utilizador
     String username = null;
     String email = null;
     String password = null;
     int tipo_utilizador = 0;
     String cargo=null;
 
+    // Inicializacao de variaveis relativas ao curso
+    String nome = null;
+    String descricao = null;
+    String docente = null;
+    int max_num = 0;
+    int inscritos = 0;
+
 
     if (utilizador == 1) {
+        // Vai buscar os dados do utilizador
         sql = "SELECT * FROM utilizador WHERE id_utilizador = '" + utilizadorAlterar + "'";
         psSql = conn.prepareStatement(sql);
         rsSql = psSql.executeQuery();
@@ -52,13 +61,10 @@
         }
     }
 
-    String nome = null;
-    String descricao = null;
-    String docente = null;
-    int max_num = 0;
-    int inscritos = 0;
+
 
     if (curso == 1) {
+        // Vai buscar os dados do curso
         sql = "SELECT * FROM curso WHERE id_curso = '" + cursoAlterar + "'";
         psSql = conn.prepareStatement(sql);
         rsSql = psSql.executeQuery();
@@ -70,7 +76,7 @@
         descricao = rsSql.getString("descricao");
         max_num = rsSql.getInt("max_num");
 
-        sql = "SELECT COUNT(*) as inscritos FROM util_curso WHERE id_curso = '" + cursoAlterar + "'";
+        sql = "SELECT COUNT(*) as inscritos FROM util_curso WHERE id_curso = '" + cursoAlterar + "' AND aceite = 1";
         psSql = conn.prepareStatement(sql);
         rsSql = psSql.executeQuery();
         rsSql.next();
@@ -131,7 +137,7 @@
     <header class="header_section">
         <div class="container-fluid">
             <nav class="navbar navbar-expand-lg custom_nav-container ">
-                <a class="navbar-brand" href="paginaPrincipal.php">
+                <a class="navbar-brand" href="paginaPrincipal.jsp">
             <span>
               Crypto Academy
             </span>
@@ -193,6 +199,7 @@
 
 if(utilizador == 1){
 
+    // Vai buscar os cargos disponiveis
     sql = "SELECT * FROM tipo_utilizador";
     psSql = conn.prepareStatement(sql);
     rsSql = psSql.executeQuery();
@@ -201,7 +208,7 @@ if(utilizador == 1){
 
     out.println("<div class=\"container-inscricao\">\n" +
             "            <div class=\"informacoes\">\n" +
-            "                <form action=\"alterar.jsp?utilizador=" + utilizador + "&id="+utilizadorAlterar+"\" method=\"post\" >\n" +
+            "                <form action=\"alterar.jsp?utilizador=" + utilizador + "&id_utilizador="+utilizadorAlterar+"\" method=\"post\" >\n" +
             "                    <br>\n" +
             "                    <h3>Alterar informações pessoais</h3>\n" +
             "                    <br><br>\n" +
@@ -216,21 +223,22 @@ if(utilizador == 1){
             // vê se é o admin e faz a logica do select para os cargos
             if(tipo == 4){
 
-                // escolher o cargo
-                out.println("                    <br><br>\n" +
-                            "                    <label>Tipo Utilizador: " + cargo + "</label>\n" +
-                            "                    <br>\n" +
-                            "                    <select name=\"tipo_utilizador\" class=\"inp\">" +
-                            "                       <option></option>");
+                // Definir um cargo para o utilizador
+                out.println("    <br><br>\n" +
+                            "    <label>Tipo Utilizador: " + cargo + "</label>\n" +
+                            "    <br>\n" +
+                            "    <select name=\"tipo_utilizador\" class=\"inp\">" +
+                            "    <option></option>"); // Opcao em braco para nao haver um valor pré-definido
 
                 while(rsSql.next()){
-                    if(rsSql.getInt("id") != tipo_utilizador && rsSql.getInt("id")!= 5){
+                    if(rsSql.getInt("id") != tipo_utilizador && rsSql.getInt("id")!= 5){ // Exclui o cargo atual do utilizador e APAGADO
                         out.println("<option value=\""+rsSql.getInt("id")+"\">"+rsSql.getString("cargo")+"</option>");
                     }
                 }
                 out.println("</select>");
 
 
+                // Vê em que cursos o utilizador não tem nenhuma inscrição
                 sql = "SELECT c.nome, c.id_curso FROM curso c WHERE c.id_curso NOT IN" +
                         " (SELECT uc.id_curso FROM util_curso uc WHERE uc.id_utilizador = "+utilizadorAlterar+") AND " +
                         " docente != (SELECT username FROM utilizador WHERE id_utilizador = "+utilizadorAlterar+");";
@@ -269,6 +277,7 @@ if(curso == 1){
 
     // Admin
     if(tipo == 4){
+        // Vê os utilizadores que podem ser docentes
         sql = "SELECT * FROM utilizador WHERE tipo_utilizador = 3 OR tipo_utilizador = 4";
         psSql = conn.prepareStatement(sql);
         rsSql = psSql.executeQuery();
@@ -286,18 +295,19 @@ if(curso == 1){
                 "            <label>Docente: "+ docente +"</label>\n" +
                 "            <br>\n");
 
+        // Selecao de um docente
         out.println(
                 "            <select name=\"docente\" class=\"inp\">" +
-                        "        <option></option>");
+                        "        <option></option>"); // Valor em branco
 
         while(rsSql.next()){
-            if(!rsSql.getString("username").equals(docente)){
+            if(!rsSql.getString("username").equals(docente)){ // Vê os possiveis docentes diferentes do atual
                 out.println("<option value=\""+rsSql.getString("username")+"\">"+rsSql.getString("username")+"</option>");
             }
         }
         out.println("</select>");
 
-        out.println("            <br><br>\n" +
+        out.println("        <br><br>\n" +
                 "            <label>Descrição do Curso:</label>\n" +
                 "            <br>\n" +
                 "            <textarea type=\"text\" name=\"descricao\" placeholder=\"Descrição do curso...\" class=\"inp\"></textarea>\n" +
@@ -307,7 +317,8 @@ if(curso == 1){
                 "            <br>\n" +
                 "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\" \n");
 
-                sql = "SELECT u.username, u.id_utilizador FROM utilizador u JOIN util_curso uc ON u.id_utilizador = uc.id_utilizador WHERE uc.id_curso = "+cursoAlterar+";";
+                // Vê os alunos inscritos no curso
+                sql = "SELECT u.username, u.id_utilizador FROM utilizador u JOIN util_curso uc ON u.id_utilizador = uc.id_utilizador WHERE uc.id_curso = "+cursoAlterar+" AND uc.aceite = 1;";
                 psSql = conn.prepareStatement(sql);
                 rsSql = psSql.executeQuery();
 
@@ -352,6 +363,7 @@ if(curso == 1){
                 "            <br>\n" +
                 "            <input type=\"number\" min=\""+ inscritos +"\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\"  class=\"inp\">\n");
 
+                        // Vê os utilizadores inscritos no curso
                         sql = "SELECT u.username, u.id_utilizador FROM utilizador u JOIN util_curso uc ON u.id_utilizador = uc.id_utilizador WHERE uc.id_curso = "+cursoAlterar+";";
                         psSql = conn.prepareStatement(sql);
                         rsSql = psSql.executeQuery();
@@ -378,6 +390,7 @@ if(curso == 1){
     // Aluno
 
     if(tipo == 2){
+        // Vê as informacoes do curso
         out.println("<div class=\"container-inscricao\">\n" +
                 "    <div class=\"informacoes\">\n"+
                 "            <br>\n" +

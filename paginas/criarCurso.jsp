@@ -4,6 +4,7 @@
     String user = (String) session.getAttribute("username");
     int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
+    // Protecao da pagina/script
     if(tipo != 4){
         out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
     }
@@ -136,32 +137,33 @@
             "                    <br>\n" +
             "                    <select name=\"docente\" class=\"inp\" required>'");
 
+                        // Vê os docentes disponiveis
                         sql = "SELECT username FROM utilizador WHERE tipo_utilizador = 3 OR tipo_utilizador = 4";
                         psSql = conn.prepareStatement(sql);
                         rsSql = psSql.executeQuery();
 
-                        out.println("<option></option>");
+                        out.println("<option></option>"); // opcao em branco para nao haver nenhum pré-definido
 
-                        while(rsSql.next()){
+                        while(rsSql.next()){ // printa os docentes, e é passado o seu id
                             out.println("<option value = "+ rsSql.getString("username")+"> "+ rsSql.getString("username")+ "</option>");
                         }
 
 
-    out.println("</select>\n" +
-    "                    <br><br>\n" +
-    "                    <label>Descrição do Curso:</label>\n" +
-    "                    <br>\n" +
-    "                    <textarea type=\"text\" name=\"descricao\" placeholder=\"Descrição do curso...\" class=\"inp\" required></textarea>\n" +
-    "                    <br><br>\n" +
-    "                    <label>Numero vagas:</label>\n" +
-    "                    <br>\n" +
-    "                    <input type=\"number\" min=\"5\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\" class=\"inp\" required>\n" +
-    "                    <br><br><br>\n" +
-    "                    <input type=\"submit\" value=\"Criar Curso\" name=\"botao\">\n" +
-    "                    <br><br>\n" +
-    "                </form>\n" +
-    "            </div>\n" +
-    "        </div>");
+            out.println("</select>\n" +
+            "                    <br><br>\n" +
+            "                    <label>Descrição do Curso:</label>\n" +
+            "                    <br>\n" +
+            "                    <textarea type=\"text\" name=\"descricao\" placeholder=\"Descrição do curso...\" class=\"inp\" required></textarea>\n" +
+            "                    <br><br>\n" +
+            "                    <label>Numero vagas:</label>\n" +
+            "                    <br>\n" +
+            "                    <input type=\"number\" min=\"5\" step=\"1\" name=\"max_num\" placeholder=\"Insira número de vagas...\" class=\"inp\" required>\n" +
+            "                    <br><br><br>\n" +
+            "                    <input type=\"submit\" value=\"Criar Curso\" name=\"botao\">\n" +
+            "                    <br><br>\n" +
+            "                </form>\n" +
+            "            </div>\n" +
+            "        </div>");
 
 
 %>
@@ -287,14 +289,16 @@
 </html>
 
 <%
-    String botao = request.getParameter("botao");
+    String botao = request.getParameter("botao"); // Vê se clicamos no botao de criar curso
 
     if(botao != null){
+        // Vai buscar os inputs
         String docente = request.getParameter("docente");
         String nome = request.getParameter("nome");
         String descricao = request.getParameter("descricao");
         int max_num = Integer.parseInt(request.getParameter("max_num"));
 
+        // Verifica se ja existe algum curso com o mesmo nome/descricao
         sql = "SELECT * FROM curso WHERE nome = '"+ nome +"' OR descricao = '"+ descricao + "';";
         psSql = conn.prepareStatement(sql);
         rsSql = psSql.executeQuery();
@@ -302,6 +306,7 @@
         if(rsSql.next()){
             out.println("<script>window.alert('Já existe um curso com esse nome/descrição!'); window.location.href = 'criarCurso.jsp';</script>");
         }else{
+            // Criar o curso na bd
             sql = "INSERT INTO curso(docente, nome, descricao, max_num) VALUES ('"+docente+"', '"+nome+"', '"+descricao+"', '"+max_num+"')";
             psSql = conn.prepareStatement(sql);
             rowsAffected = psSql.executeUpdate();

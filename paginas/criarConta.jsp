@@ -1,5 +1,4 @@
-<%@ page import="java.sql.PreparedStatement" %>
-<%@ page import="java.sql.ResultSet" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="../basedados/basedados.h" %>
 <%
 String user = request.getParameter("user");
@@ -13,7 +12,7 @@ try {
     rsSql =psSql.executeQuery();
 
     if(rsSql.next()){
-        // Ver se é o user ou email (futuro)
+        // Ver se é o user ou email
         out.println("<script>window.alert('Username/email ja a ser usados!'); window.location.href = './login.html'</script>");
     }else{
 

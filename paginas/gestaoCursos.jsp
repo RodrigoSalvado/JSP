@@ -4,6 +4,7 @@
         String user = (String) session.getAttribute("username");
         int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
+        // Protecao da pagina/script
         if(tipo == 1 || tipo == 0 || tipo == 2){
             out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
         }
@@ -132,6 +133,8 @@
 
                 <%
 
+                    // Tabela para o admin/docente para gerir cursos
+
                     out.println("<thead>\n" +
 "                                <tr>\n" +
 "                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Nome Curso</span></th>\n" +
@@ -148,11 +151,11 @@
 
                             sql = tipo == 4?
                             //Admin
-                             "SELECT c.nome, c.id_curso, c.docente, c.max_num, COUNT(uc.id_inscricao) " +
-                             "AS inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso GROUP BY c.id_curso":
+                             "SELECT c.nome, c.id_curso, c.docente, c.max_num, COUNT(uc.id_inscricao) AS inscritos FROM curso c LEFT JOIN " +
+                              "util_curso uc ON c.id_curso = uc.id_curso AND uc.aceite = 1 GROUP BY c.id_curso;":
                             //Docente
                             "SELECT c.nome, c.id_curso, c.docente, c.max_num, COUNT(uc.id_inscricao)" +
-                            " inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso WHERE c.docente = '"+ user +"' GROUP BY c.id_curso";
+                            "AS inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso AND uc.aceite = 1 WHERE c.docente = '"+ user +"' GROUP BY c.id_curso";
                             psSql = conn.prepareStatement(sql);
                             rsSql = psSql.executeQuery();
 
@@ -180,7 +183,7 @@
 "                                        </tbody>\n" +
 "                                    </table>");
 
-                            if(tipo==4){
+                            if(tipo==4){ // Botao para criar curso
                                 out.println("<a href=\"criarCurso.jsp\"><button class=\"btn-curso\" style=\"margin: 20px\">Adicionar Curso</button></a>");
                             }
                 %>

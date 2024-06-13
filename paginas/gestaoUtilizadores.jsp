@@ -4,6 +4,7 @@
     String user = (String) session.getAttribute("username");
     int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
+    // Protecao de pagina/script
     if(tipo != 4 ){
         out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
     }
@@ -140,6 +141,7 @@
                 <div class="botoes_gest">
                     <%
 
+                        // Ver os dados dos utilizadores
                         sql = "SELECT username, tipo_utilizador, id_utilizador FROM utilizador WHERE username != '"+user+"'";
                         psSql = conn.prepareStatement(sql);
                         rsSql = psSql.executeQuery();
@@ -150,7 +152,7 @@
                             int tipo_utilizador = Integer.parseInt(rsSql.getString("tipo_utilizador"));
                             int id_utilizador =  Integer.parseInt(rsSql.getString("id_utilizador"));
 
-                            String aux = null;
+                            String aux = null; // Ver o cargo
 
                                 switch (tipo_utilizador){
                                     case 4:
@@ -167,7 +169,7 @@
                                         break;
                                 }
 
-                                if(tipo_utilizador == 1){
+                                if(tipo_utilizador == 1){ // Se for cliente
                                     out.println("<tr>\n" +
                                             "<td class='text-center'>"+utilizador+"</td>\n" +
                                             "<td class='text-center'>"+aux+"</td>\n" +
@@ -180,10 +182,10 @@
                                     out.println("<tr>\n" +
                                             "<td class='text-center'>"+utilizador+"</td>\n" +
                                             "<td class='text-center'>"+aux+"</td>\n" +
-                                            "<td class='text-center'><a href='promocao.jsp?promover=1&id="+id_utilizador+"'><button>Promover</button></a></td>\n" +
-                                            "<td class='text-center'><a href='promocao.jsp?promover=0&id="+id_utilizador+"'><button>Despromover</button></a></td>\n" +
-                                            "<td class='text-center'><a href='apagar.jsp?id_utilizador="+id_utilizador+"'><button>Apagar</button></a></td>\n" +
-                                            "<td class='text-center'><a href='gerirDados.jsp?id_utilizador="+id_utilizador+"&utilizador=1'><button>Detalhes</button></a></td>\n" +
+                                            "<td class='text-center'><a href='promocao.jsp?promover=1&id_utilizador="+id_utilizador+"'><button>Promover</button></a></td>\n" + // Promover
+                                            "<td class='text-center'><a href='promocao.jsp?promover=0&id_utilizador="+id_utilizador+"'><button>Despromover</button></a></td>\n" + // Despromover
+                                            "<td class='text-center'><a href='apagar.jsp?id_utilizador="+id_utilizador+"'><button>Apagar</button></a></td>\n" + // Apagar
+                                            "<td class='text-center'><a href='gerirDados.jsp?id_utilizador="+id_utilizador+"&utilizador=1'><button>Detalhes</button></a></td>\n" + // Detalhes
                                             "</tr>");
                                 }
 

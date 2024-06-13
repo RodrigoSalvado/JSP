@@ -2,6 +2,7 @@
 <%@ include file="../basedados/basedados.h"%>
 
 <%
+    // Dados dos inputs
     String user = request.getParameter("user");
     String pass = request.getParameter("pass");
 
@@ -11,8 +12,10 @@
     rsSql = psSql.executeQuery();
 
 
-    if(rsSql.next()) {
-        if(rsSql.getInt("tipo_utilizador")!=1){
+    if(rsSql.next()) { // Se houver next(), significa que há registo
+
+        if(rsSql.getInt("tipo_utilizador")!=1){ // Verifica se é um cliente a tentar entrar com uma conta nao validada
+            // Definir variaveis de sessao
             session.setAttribute("username", user);
             session.setAttribute("tipo_utilizador", rsSql.getInt("tipo_utilizador"));
             out.println("<script>window.alert('Fez Login!'); window.location.href = './paginaPrincipal.jsp'</script>");

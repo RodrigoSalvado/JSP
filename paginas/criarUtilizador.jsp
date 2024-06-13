@@ -4,6 +4,7 @@
     String user = (String) session.getAttribute("username");
     int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
+    // Protecao da pagina/script
     if(tipo != 4){
         out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
     }
@@ -135,29 +136,30 @@
             "                    <input type=\"text\" name=\"username\" placeholder=\"Nome do utilizador...\" class=\"inp\" required>\n");
 
 
-                out.println("                    <br><br>\n" +
-                        "                    <label>Tipo Utilizador:</label>\n" +
-                        "                    <br>\n" +
-                        "                    <select name=\"cargo\" class=\"inp\">" +
-                        "                       <option></option>");
+                out.println("    <br><br>\n" +
+                        "        <label>Tipo Utilizador:</label>\n" +
+                        "        <br>\n" +
+                        "        <select name=\"cargo\" class=\"inp\" required>" +
+                        "             <option></option>"); // Opcao em branco para nao haver um valor pré definido
 
-                sql = "SELECT * FROM tipo_utilizador";
-                psSql = conn.prepareStatement(sql);
-                rsSql = psSql.executeQuery();
+                            // Vai ver os cargos disponiveis
+                            sql = "SELECT * FROM tipo_utilizador";
+                            psSql = conn.prepareStatement(sql);
+                            rsSql = psSql.executeQuery();
 
-                while(rsSql.next()){
-                    if(rsSql.getInt("id")!= 5){
-                        out.println("<option value=\""+rsSql.getInt("id")+"\">"+rsSql.getString("cargo")+"</option>");
-                    }
-                }
-                out.println("</select>");
+                            while(rsSql.next()){
+                                if(rsSql.getInt("id")!= 5){ // Ignora o cargo: APAGADO, pois nao é usado
+                                    out.println("<option value=\""+rsSql.getInt("id")+"\">"+rsSql.getString("cargo")+"</option>");
+                                }
+                            }
+                            out.println("</select>");
 
 
     out.println("</select>\n" +
             "                    <br><br>\n" +
             "                    <label>Email:</label>\n" +
             "                    <br>\n" +
-            "                    <input type=\"email\" placeholder=\"Email do utilizador...\" name=\"email\"  class=\"inp\" required></textarea>\n" +
+            "                    <input type=\"email\" placeholder=\"Email do utilizador...\" name=\"email\"  class=\"inp\" required>\n" +
             "                    <br><br>\n" +
             "                    <label>Password:</label>\n" +
             "                    <br>\n" +
@@ -293,20 +295,22 @@
 </html>
 
 <%
-    String botao = request.getParameter("botao");
+    String botao = request.getParameter("botao"); // Verifica se clicamos no botao, criar utilizador
 
     if(botao != null){
+        // Vai buscar o valor dos inputs
         String username = request.getParameter("username");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         int cargo = Integer.parseInt(request.getParameter("cargo"));
 
+        // Verifica se ja existe um utilizador com esse username/email
         sql = "SELECT * FROM utilizador WHERE username = '"+ username +"' OR email = '"+ email + "';";
         psSql = conn.prepareStatement(sql);
         rsSql = psSql.executeQuery();
 
         if(rsSql.next()){
-            out.println("<script>window.alert('Já existe um curso com esse username/email!'); window.location.href = 'criarUtilizador.jsp';</script>");
+            out.println("<script>window.alert('Já existe um utilizador com esse username/email!'); window.location.href = 'criarUtilizador.jsp';</script>");
         }else{
             sql = "INSERT INTO utilizador(username, password, email, tipo_utilizador) VALUES ('"+username+"', '"+password+"', '"+email+"', "+cargo+")";
             psSql = conn.prepareStatement(sql);

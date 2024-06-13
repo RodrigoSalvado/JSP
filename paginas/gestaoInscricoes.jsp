@@ -4,6 +4,7 @@
     String user = (String) session.getAttribute("username");
     int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
+    // Protecao pagina/script
     if(tipo == 1 || tipo == 0){
         out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
     }
@@ -130,7 +131,7 @@
                 <%
 
                     switch(tipo){
-                        case 4:
+                        case 4: // Tabela do admin
                             out.println("<thead>\n" +
 "                                <tr>\n" +
 "                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Curso</span></th>\n" +
@@ -144,6 +145,7 @@
 "                            <tbody>\n" +
 "                            <div class=\"botoes_gest\">");
 
+                            // Vê todas as inscricoes
                             sql = "SELECT u.username, uc.id_utilizador, uc.id_curso, c.nome, uc.aceite FROM util_curso uc " +
                              "JOIN utilizador u ON uc.id_utilizador = u.id_utilizador JOIN curso c ON uc.id_curso = c.id_curso";
                             psSql = conn.prepareStatement(sql);
@@ -179,7 +181,8 @@
 
                             }
                             break;
-                       case 3:
+
+                       case 3: // Tabela docente
                             out.println("<thead>\n" +
 "                                <tr>\n" +
 "                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Curso</span></th>\n" +
@@ -193,6 +196,7 @@
 "                            <tbody>\n" +
 "                            <div class=\"botoes_gest\">");
 
+                            // Vê as inscricoes dos cursos associados ao docente
                             sql = "SELECT u.username, uc.id_utilizador, uc.id_curso, c.nome, uc.aceite FROM util_curso uc " +
                              "JOIN utilizador u ON uc.id_utilizador = u.id_utilizador JOIN curso c ON uc.id_curso = c.id_curso" +
                              " WHERE c.docente = "+ user +";";
@@ -229,7 +233,8 @@
 
                             }
                             break;
-                        case 2:
+
+                        case 2: // Tabela aluno
                             out.println("<thead>\n" +
 "                                <tr>\n" +
 "                                    <th class=\"text-center header\" scope=\"col\" role=\"columnheader\"><span>Curso</span></th>\n" +
@@ -241,6 +246,7 @@
 "                            <tbody>\n" +
 "                            <div class=\"botoes_gest\">");
 
+                            // Vê as inscricoes que fez para cada curso
                             sql = "SELECT uc.id_utilizador, uc.id_curso, c.nome, uc.aceite FROM util_curso uc " +
                              "JOIN utilizador u ON uc.id_utilizador = u.id_utilizador JOIN curso c ON uc.id_curso = c.id_curso";
                             psSql = conn.prepareStatement(sql);

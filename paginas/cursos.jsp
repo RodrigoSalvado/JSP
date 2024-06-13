@@ -124,6 +124,7 @@
               </div>
 
               <%
+                  // Vai buscar a informacao de todos os cursos
                   sql = "SELECT * FROM curso";
                   psSql = conn.prepareStatement(sql);
                   rsSql = psSql.executeQuery();
@@ -134,15 +135,15 @@
                       String nome = rsSql.getString("nome");
                       String descricao = rsSql.getString("descricao");
                       int id = rsSql.getInt("id_curso");
-                      String verf = user == null? "<a href='./login.html'> Inicie sessão para se inscrever no nosso curso!</a>":
+                      String verf = user == null? // Verifica se temos a sessao iniciada
+                              "<a href='./login.html'> Inicie sessão para se inscrever no nosso curso!</a>":
                               "<a href='./inscricaoCurso.jsp?id="+id+"'>Inscreva-se</a>";
 
 
                       if(count%3==0){
-                          out.println("<div class='row'>");
+                          out.println("<div class='row'>"); // a cada 3 cria a div
                       }
               %>
-
                       <div class="col-md-4 ">
                           <div class="box ">
                               <div class="img-box">
@@ -162,10 +163,10 @@
                       </div>
 
               <%
-                      if(count%3==2){
+                      if(count%3==2){ // a cada 3 cursos apos a div ser criada finaliza a <div class=row>
                           out.println("</div>");
                       }
-                      count++;
+                      count++; // aumenta o contador
                   }//fim do while
               %>
 

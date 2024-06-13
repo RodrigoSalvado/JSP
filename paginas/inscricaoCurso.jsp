@@ -1,17 +1,17 @@
-<%@ page import="java.sql.PreparedStatement" %>
-<%@ page import="java.sql.ResultSet" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="../basedados/basedados.h" %>
 <%
         String user = (String) session.getAttribute("username");
         int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
+        // Protecao de pagina/script
         if(tipo == 1 || tipo == 0 ){
             out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
         }
 
         int id_curso = request.getParameter("id") == null? 0: Integer.parseInt(request.getParameter("id"));
 
+        // Dados do curso
         sql = "SELECT * FROM curso WHERE id_curso = "+ id_curso +";";
         psSql = conn.prepareStatement(sql);
         rsSql = psSql.executeQuery();
@@ -131,6 +131,8 @@
     </header>
     <!-- end header section -->
 </div>
+
+<!-- Print das informacoes do curso  -->
 
 <div class="container-inscricao">
     <div class="informacoes">

@@ -4,12 +4,14 @@
     String user = (String) session.getAttribute("username");
     int tipo = session.getAttribute("tipo_utilizador")==null? 0: (Integer) session.getAttribute("tipo_utilizador");
 
+    // Protecao de pagina/script
     if(tipo == 1 || tipo == 0 || tipo == 2){
         out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
     }
 
     int id_curso = request.getParameter("id_curso") == null? -1: Integer.parseInt(request.getParameter("id_curso"));
 
+    // Dados do curso
     sql = "SELECT * FROM curso WHERE id_curso = "+id_curso+";";
     psSql = conn.prepareStatement(sql);
     rsSql = psSql.executeQuery();
@@ -153,6 +155,7 @@
 "                            <tbody>\n" +
 "                            <div class=\"botoes_gest\">");
 
+                            // Vê os utilizadores que nao estao inscritos no curso, exclui o docente
                             sql = "SELECT id_utilizador, username FROM utilizador WHERE id_utilizador NOT IN " +
                              "(SELECT uc.id_utilizador FROM util_curso uc WHERE uc.id_curso = "+ id_curso+") AND username NOT IN " +
                               "(SELECT docente FROM curso WHERE id_curso = "+id_curso+");\n";
@@ -160,9 +163,11 @@
                             psSql = conn.prepareStatement(sql);
                             rsSql = psSql.executeQuery();
                             %>
+
                     <form action="inscreverUsers.jsp?id_curso=<%=id_curso%>" method="post">
 
                             <%
+                            // Printar os utilizadores
                             while(rsSql.next()){
                                 String username = rsSql.getString("username");
                                 int id_utilizador = rsSql.getInt("id_utilizador");
