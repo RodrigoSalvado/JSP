@@ -198,8 +198,8 @@
 
                             // Vê as inscricoes dos cursos associados ao docente
                             sql = "SELECT u.username, uc.id_utilizador, uc.id_curso, c.nome, uc.aceite FROM util_curso uc " +
-                             "JOIN utilizador u ON uc.id_utilizador = u.id_utilizador JOIN curso c ON uc.id_curso = c.id_curso" +
-                             " WHERE c.docente = "+ user +";";
+                             "JOIN utilizador u ON uc.id_utilizador = u.id_utilizador JOIN curso c ON uc.id_curso = c.id_curso AND c.docente = '"+ user +"';";
+
                             psSql = conn.prepareStatement(sql);
                             rsSql = psSql.executeQuery();
 
