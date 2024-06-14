@@ -173,9 +173,9 @@
                                     out.println("<tr>\n" +
                                             "<td class='text-center'>"+utilizador+"</td>\n" +
                                             "<td class='text-center'>"+aux+"</td>\n" +
-                                            "<td class='text-center'><a href='promocao.jsp?promover=1&id="+id_utilizador+"'><button>Promover</button></a></td>\n" +
+                                            "<td class='text-center'><a href='promocao.jsp?promover=1&id_utilizador="+id_utilizador+"'><button>Promover</button></a></td>\n" +
                                             "<td class='text-center'>/</td>\n" +
-                                            "<td class='text-center'><a href='apagar.jsp?id_utilizador="+utilizador+"'><button>Apagar</button></a></td>\n" +
+                                            "<td class='text-center'><a href='apagar.jsp?id_utilizador="+id_utilizador+"'><button>Apagar</button></a></td>\n" +
                                             "<td class='text-center'>/</td>\n" +
                                             "</tr>");
                                 }else{
