@@ -91,9 +91,15 @@ CREATE TABLE `utilizador` (
 --
 
 INSERT INTO `utilizador` (`id_utilizador`, `username`, `password`, `email`, `tipo_utilizador`) VALUES
-                                                                                                   (1, 'admin', 'admin', 'admin@admin.com', 4),
-                                                                                                   (2, 'docente', 'docente', 'docente@docente.com', 3),
-                                                                                                   (3, 'aluno', 'aluno', 'aluno@aluno.com', 2);
+                                                                                                   (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'admin@admin.com', 4),
+                                                                                                   (2, 'docente', 'ac99fecf6fcb8c25d18788d14a5384ee', 'docente@docente.com', 3),
+                                                                                                   (3, 'aluno', 'ca0cd09a12abade3bf0777574d9f987f', 'aluno@aluno.com', 2),
+                                                                                                   (4, 'Windoh', '202cb962ac59075b964b07152d234b70', 'windoh@gmail.com', 3),
+                                                                                                   (5, 'Tiago Paiva', '202cb962ac59075b964b07152d234b70', 'tiagopaiva@gmail.com', 3),
+                                                                                                   (6, 'Gabriel Ferreira', '202cb962ac59075b964b07152d234b70', 'gabrielferreira@gmail.com', 3),
+                                                                                                   (7, 'Bernardo Almeida', '202cb962ac59075b964b07152d234b70', 'bernardoalmeida@gmail.com', 3),
+                                                                                                   (8, 'RicFazeres', '202cb962ac59075b964b07152d234b70', 'ricfazeres@gmail.com', 3),
+                                                                                                   (9, 'Numeiro', '202cb962ac59075b964b07152d234b70', 'numeiro@gmail.com', 3);
 
 -- --------------------------------------------------------
 
@@ -156,13 +162,13 @@ ALTER TABLE `tipo_utilizador`
 -- AUTO_INCREMENT de tabela `utilizador`
 --
 ALTER TABLE `utilizador`
-    MODIFY `id_utilizador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+    MODIFY `id_utilizador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de tabela `util_curso`
 --
 ALTER TABLE `util_curso`
-    MODIFY `id_inscricao` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+    MODIFY `id_inscricao` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
