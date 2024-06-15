@@ -5,8 +5,10 @@
     // Protecao de pagina/script
     if(tipo == 1 || tipo == 0){
         out.println("<script>window.alert('Nao tem autorização para entrar aqui') ; window.location.href = 'paginaPrincipal.jsp';</script>");
+    }else{
+        session.invalidate();
+        out.println("<script>window.alert('Deu logout!'); window.location.href = './paginaPrincipal.jsp'</script>");
     }
 
-    session.invalidate();
-    out.println("<script>window.alert('Deu logout!'); window.location.href = './paginaPrincipal.jsp'</script>");
+
 %>
