@@ -91,15 +91,15 @@ CREATE TABLE `utilizador` (
 --
 
 INSERT INTO `utilizador` (`id_utilizador`, `username`, `password`, `email`, `tipo_utilizador`) VALUES
-                                                                                                   (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'admin@admin.com', 4),
-                                                                                                   (2, 'docente', 'ac99fecf6fcb8c25d18788d14a5384ee', 'docente@docente.com', 3),
-                                                                                                   (3, 'aluno', 'ca0cd09a12abade3bf0777574d9f987f', 'aluno@aluno.com', 2),
-                                                                                                   (4, 'Windoh', '202cb962ac59075b964b07152d234b70', 'windoh@gmail.com', 3),
-                                                                                                   (5, 'Tiago Paiva', '202cb962ac59075b964b07152d234b70', 'tiagopaiva@gmail.com', 3),
-                                                                                                   (6, 'Gabriel Ferreira', '202cb962ac59075b964b07152d234b70', 'gabrielferreira@gmail.com', 3),
-                                                                                                   (7, 'Bernardo Almeida', '202cb962ac59075b964b07152d234b70', 'bernardoalmeida@gmail.com', 3),
-                                                                                                   (8, 'RicFazeres', '202cb962ac59075b964b07152d234b70', 'ricfazeres@gmail.com', 3),
-                                                                                                   (9, 'Numeiro', '202cb962ac59075b964b07152d234b70', 'numeiro@gmail.com', 3);
+                                                                                                   (1, 'admin', 'admin', 'admin@admin.com', 4),
+                                                                                                   (2, 'docente', 'docente', 'docente@docente.com', 3),
+                                                                                                   (3, 'aluno', 'aluno', 'aluno@aluno.com', 2),
+                                                                                                   (4, 'Windoh', '123', 'windoh@gmail.com', 3),
+                                                                                                   (5, 'Tiago Paiva', '123', 'tiagopaiva@gmail.com', 3),
+                                                                                                   (6, 'Gabriel Ferreira', '123', 'gabrielferreira@gmail.com', 3),
+                                                                                                   (7, 'Bernardo Almeida', '123', 'bernardoalmeida@gmail.com', 3),
+                                                                                                   (8, 'RicFazeres', '123', 'ricfazeres@gmail.com', 3),
+                                                                                                   (9, 'Numeiro', '123', 'numeiro@gmail.com', 3);
 
 -- --------------------------------------------------------
 
