@@ -155,6 +155,9 @@
                             String aux = null; // Ver o cargo
 
                                 switch (tipo_utilizador){
+                                    case 5:
+                                        aux = "Apagado";
+                                        break;
                                     case 4:
                                         aux = "Administrador";
                                         break;

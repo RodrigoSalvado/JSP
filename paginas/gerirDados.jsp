@@ -237,7 +237,7 @@ if(utilizador == 1){
                             "    <option></option>"); // Opcao em braco para nao haver um valor pré-definido
 
                 while(rsSql.next()){
-                    if(rsSql.getInt("id") != tipo_utilizador){ // Exclui o cargo atual do utilizador
+                    if(rsSql.getInt("id") != tipo_utilizador && rsSql.getInt("id") != 5){ // Exclui o cargo atual do utilizador e APAGADO
                         out.println("<option value=\""+rsSql.getInt("id")+"\">"+rsSql.getString("cargo")+"</option>");
                     }
                 }

@@ -112,11 +112,13 @@
 
                 // Caso o admin inscreva o utilizador para um/vários cursos, caso não tenha este bloco é ignorado
                 // A inscrição é automaticamente aprovada
+
                 for(String insCurso: cursos){
                     if(!insCurso.equals("vazio")){
                         int id_curso = Integer.parseInt(insCurso);
 
-                        sql = "SELECT c.max_num, COUNT(uc.id_inscricao) AS inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso AND uc.aceite = 1";
+                        sql = "SELECT c.max_num, COUNT(uc.id_inscricao) AS inscritos FROM curso c LEFT JOIN util_curso uc ON" +
+                                " c.id_curso = uc.id_curso AND uc.aceite = 1 WHERE c.id_curso = "+id_curso+" GROUP BY c.id_curso;";
                         psSql = conn.prepareStatement(sql);
                         rsSql = psSql.executeQuery();
 
@@ -125,12 +127,10 @@
                         int total = rsSql.getInt("max_num");
                         int inscritos = rsSql.getInt("inscritos");
 
-
                         if(total > inscritos){
                             sql = "INSERT INTO util_curso (id_utilizador, id_curso, aceite) VALUES ("+id_utilizador+","+id_curso+","+1+")";
                             psSql = conn.prepareStatement(sql);
                             psSql.executeUpdate();
-
                         }else{
                             out.println("<script>window.alert('Não há mais vagas!') ; window.location.href = 'gerirDados.jsp?utilizador=1&id_utilizador="+id_utilizador+"';</script>");
                         }
@@ -149,12 +149,6 @@
                     // Caso o novo cargo nao seja um docente ou admin, verifica se o utilizador era um docente e atualiza o curso
                     if(nTipo_utilizador != 3 && nTipo_utilizador != 4){
                         sql = "UPDATE curso SET docente = '' WHERE docente = (SELECT username FROM utilizador WHERE id_utilizador = "+id_utilizador+")";
-                        psSql = conn.prepareStatement(sql);
-                        psSql.executeUpdate();
-                    }
-
-                    if(nTipo_utilizador == 5){
-                        sql = "DELETE FROM util_curso WHERE id_utilizador = "+ id_utilizador +";";
                         psSql = conn.prepareStatement(sql);
                         psSql.executeUpdate();
                     }

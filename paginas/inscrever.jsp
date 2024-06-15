@@ -41,7 +41,8 @@
             }else{
 
                 // Ver num inscritos no curso
-                sql = "SELECT c.max_num, COUNT(uc.id_inscricao) AS inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso AND uc.aceite = 1";
+                sql = "SELECT c.max_num, COUNT(uc.id_inscricao) AS inscritos FROM curso c LEFT JOIN util_curso uc ON" +
+                        " c.id_curso = uc.id_curso AND uc.aceite = 1 WHERE c.id_curso = "+id_curso+" GROUP BY c.id_curso;";
                 psSql = conn.prepareStatement(sql);
                 rsSql = psSql.executeQuery();
 

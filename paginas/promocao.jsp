@@ -26,6 +26,11 @@
 
         if(promover == 1){
             switch (tipo_utilizador) {
+
+                case 5:
+                    out.println("<script>window.alert('Este utilizador foi Apagado') ; window.location.href = 'gestaoUtilizadores.jsp';</script>");
+                    break;
+
                 case 4: // Se ja for admin, nao promove mais
                     out.println("<script>window.alert('Este utilizador já tem o cargo máximo') ; window.location.href = 'gestaoUtilizadores.jsp';</script>");
                     break;
@@ -65,6 +70,11 @@
             }
         }else{
             switch (tipo_utilizador) {
+
+                case 5:
+                    out.println("<script>window.alert('Este utilizador foi Apagado') ; window.location.href = 'gestaoUtilizadores.jsp';</script>");
+                    break;
+
                 case 4: // Se for admin, promove para docente
                     sql = "UPDATE utilizador SET tipo_utilizador = "+ 3 +" WHERE id_utilizador = "+ id +";";
                     psSql = conn.prepareStatement(sql);

@@ -14,14 +14,19 @@
 
     if(rsSql.next()) { // Se houver next(), significa que há registo
 
-        if(rsSql.getInt("tipo_utilizador")!=1){ // Verifica se é um cliente a tentar entrar com uma conta nao validada
-            // Definir variaveis de sessao
-            session.setAttribute("username", user);
-            session.setAttribute("tipo_utilizador", rsSql.getInt("tipo_utilizador"));
-            out.println("<script>window.alert('Fez Login!'); window.location.href = './paginaPrincipal.jsp'</script>");
+        if(rsSql.getInt("tipo_utilizador") == 5){
+            out.println("<script>window.alert('A sua Conta Foi Apagada!'); window.location.href = './paginaPrincipal.jsp'</script>");
         }else{
-            out.println("<script>window.alert('A sua conta ainda não foi validada!'); window.location.href = './login.html'</script>");
+            if(rsSql.getInt("tipo_utilizador")!=1){ // Verifica se é um cliente a tentar entrar com uma conta nao validada
+                // Definir variaveis de sessao
+                session.setAttribute("username", user);
+                session.setAttribute("tipo_utilizador", rsSql.getInt("tipo_utilizador"));
+                out.println("<script>window.alert('Fez Login!'); window.location.href = './paginaPrincipal.jsp'</script>");
+            }else{
+                out.println("<script>window.alert('A sua conta ainda não foi validada!'); window.location.href = './login.html'</script>");
+            }
         }
+
     }else{
         out.println("<script>window.alert('Dados inválidos!'); window.location.href = './login.html'</script>");
     }

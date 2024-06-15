@@ -13,29 +13,27 @@
         // Vê os utilizadores selecionados pelas check-boxs, se nenhum foi selecionado o array fica array[0]="vazio"
         String[] utilizadores = request.getParameterValues("utilizadores") == null ? new String[] {"vazio"} : request.getParameterValues("utilizadores");
 
+        sql = "SELECT c.max_num, COUNT(uc.id_inscricao) AS inscritos FROM curso c LEFT JOIN util_curso uc ON" +
+                " c.id_curso = uc.id_curso AND uc.aceite = 1 WHERE c.id_curso = "+id_curso+" GROUP BY c.id_curso;";
+        psSql = conn.prepareStatement(sql);
+        rsSql = psSql.executeQuery();
 
+        rsSql.next();
+
+        int total = rsSql.getInt("max_num");
+        int inscritos = rsSql.getInt("inscritos");
 
 
         // Inscrever os utilizadores
         for(String utilizador: utilizadores){
             if(!utilizador.equals("vazio")){
 
-                sql = "SELECT c.max_num, COUNT(uc.id_inscricao) AS inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso AND uc.aceite = 1";
-                psSql = conn.prepareStatement(sql);
-                rsSql = psSql.executeQuery();
-
-                rsSql.next();
-
-                int total = rsSql.getInt("max_num");
-                int inscritos = rsSql.getInt("inscritos");
-
-
                 if(total > inscritos){
                     int id_utilizador = Integer.parseInt(utilizador);
                     sql = "INSERT INTO util_curso (id_utilizador, id_curso, aceite) VALUES ("+id_utilizador+","+id_curso+","+1+")";
                     psSql = conn.prepareStatement(sql);
                     psSql.executeUpdate();
-
+                    inscritos++;
                 }else{
                     out.println("<script>window.alert('Não há mais vagas!') ; window.location.href = 'inscreverUtilizador.jsp?id_curso="+id_curso+"';</script>");
                 }
