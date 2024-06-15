@@ -110,6 +110,35 @@
                     alterado = true;
                 }
 
+                // Caso o admin inscreva o utilizador para um/vários cursos, caso não tenha este bloco é ignorado
+                // A inscrição é automaticamente aprovada
+                for(String insCurso: cursos){
+                    if(!insCurso.equals("vazio")){
+                        int id_curso = Integer.parseInt(insCurso);
+
+                        sql = "SELECT c.max_num, COUNT(uc.id_inscricao) AS inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso AND uc.aceite = 1";
+                        psSql = conn.prepareStatement(sql);
+                        rsSql = psSql.executeQuery();
+
+                        rsSql.next();
+
+                        int total = rsSql.getInt("max_num");
+                        int inscritos = rsSql.getInt("inscritos");
+
+
+                        if(total > inscritos){
+                            sql = "INSERT INTO util_curso (id_utilizador, id_curso, aceite) VALUES ("+id_utilizador+","+id_curso+","+1+")";
+                            psSql = conn.prepareStatement(sql);
+                            psSql.executeUpdate();
+
+                        }else{
+                            out.println("<script>window.alert('Não há mais vagas!') ; window.location.href = 'gerirDados.jsp?utilizador=1&id_utilizador="+id_utilizador+"';</script>");
+                        }
+
+                        alterado = true;
+                    }
+                }
+
 
                 // Compara o cargo atual com o novo
                 if(nTipo_utilizador != tipo_utilizador && nTipo_utilizador != -1){
@@ -124,25 +153,18 @@
                         psSql.executeUpdate();
                     }
 
+                    if(nTipo_utilizador == 5){
+                        sql = "DELETE FROM util_curso WHERE id_utilizador = "+ id_utilizador +";";
+                        psSql = conn.prepareStatement(sql);
+                        psSql.executeUpdate();
+                    }
+
                     // Verifica se é o próprio utilizador a trocar os dados, e atualiza o seu cargo (só o admin usufrui disto!)
                     if(user.equals(username)){
                         session.setAttribute("tipo_utilizador", nTipo_utilizador);
                     }
 
                     alterado = true;
-                }
-
-                // Caso o admin inscreva o utilizador para um/vários cursos, caso não tenha este bloco é ignorado
-                // A inscrição é automaticamente aprovada
-                for(String insCurso: cursos){
-                    if(!insCurso.equals("vazio")){
-                        int id_curso = Integer.parseInt(insCurso);
-                        sql = "INSERT INTO util_curso (id_utilizador, id_curso, aceite) VALUES ("+id_utilizador+","+id_curso+","+1+")";
-                        psSql = conn.prepareStatement(sql);
-                        psSql.executeUpdate();
-
-                        alterado = true;
-                    }
                 }
 
 

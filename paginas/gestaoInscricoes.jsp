@@ -248,7 +248,7 @@
 
                             // Vê as inscricoes que fez para cada curso
                             sql = "SELECT uc.id_utilizador, uc.id_curso, c.nome, uc.aceite FROM util_curso uc " +
-                             "JOIN utilizador u ON uc.id_utilizador = u.id_utilizador JOIN curso c ON uc.id_curso = c.id_curso";
+                             "JOIN utilizador u ON uc.id_utilizador = u.id_utilizador JOIN curso c ON uc.id_curso = c.id_curso WHERE u.username = '"+user+"';";
                             psSql = conn.prepareStatement(sql);
                             rsSql = psSql.executeQuery();
 

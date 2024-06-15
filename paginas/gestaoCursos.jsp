@@ -159,6 +159,8 @@
                             psSql = conn.prepareStatement(sql);
                             rsSql = psSql.executeQuery();
 
+
+
                             while(rsSql.next()){
                                 String nome = rsSql.getString("nome");
                                 String docente = rsSql.getString("docente");
@@ -166,12 +168,14 @@
                                 int inscritos = rsSql.getInt("inscritos");
                                 int vagasCurso = rsSql.getInt("max_num");
 
+                                String apagar = tipo == 4? "<a href='apagar.jsp?id_curso="+ id_curso +"'><button>Apagar</button></a>": "/";
+
                                 out.println("<tr>\n" +
 "                                        <td class='text-center'>"+ nome +"</td>\n" +
 "                                        <td class='text-center'>"+ docente +"</td>\n" +
 "                                        <td class='text-center'>"+ vagasCurso +"</td>\n" +
 "                                        <td class='text-center'>"+ (vagasCurso - inscritos) +"</td>\n" +
-"                                        <td class='text-center'><a href='apagar.jsp?id_curso="+ id_curso +"'><button>Apagar</button></a></td>\n" +
+"                                        <td class='text-center'>"+ apagar +"</td>\n" +
 "                                        <td class='text-center'><a href='gerirDados.jsp?curso=1&id_curso="+ id_curso +"'><button>Detalhes</button></a></td>\n" +
 "                                        <td class='text-center'><a href='inscreverUtilizador.jsp?id_curso="+ id_curso +"'><button>Inscrever</button></a></td>\n" +
 "                                    </tr>");

@@ -155,8 +155,8 @@
 "                            <tbody>\n" +
 "                            <div class=\"botoes_gest\">");
 
-                            // Vê os utilizadores que nao estao inscritos no curso, exclui o docente
-                            sql = "SELECT id_utilizador, username FROM utilizador WHERE id_utilizador NOT IN " +
+                            // Vê os utilizadores que nao estao inscritos no curso, exclui o docente e os Clientes
+                            sql = "SELECT id_utilizador, username FROM utilizador WHERE tipo_utilizador != 1  AND tipo_utilizador != 5 AND id_utilizador NOT IN " +
                              "(SELECT uc.id_utilizador FROM util_curso uc WHERE uc.id_curso = "+ id_curso+") AND username NOT IN " +
                               "(SELECT docente FROM curso WHERE id_curso = "+id_curso+");\n";
 

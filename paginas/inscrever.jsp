@@ -41,7 +41,7 @@
             }else{
 
                 // Ver num inscritos no curso
-                sql = "SELECT c.max_num, COUNT(uc.id_inscricao) AS inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso GROUP BY c.id_curso";
+                sql = "SELECT c.max_num, COUNT(uc.id_inscricao) AS inscritos FROM curso c LEFT JOIN util_curso uc ON c.id_curso = uc.id_curso AND uc.aceite = 1";
                 psSql = conn.prepareStatement(sql);
                 rsSql = psSql.executeQuery();
 
@@ -50,16 +50,15 @@
                 int total = rsSql.getInt("max_num");
                 int inscritos = rsSql.getInt("inscritos");
 
-                if(total <= inscritos){
-                    out.println("<script>alert('Não há mais vagas para este curso!'); window.location.href = 'paginaPrincipal.jsp';</script>");
-                }else{
-
+                if(total > inscritos){
                     // Inscrever
                     sql = "INSERT INTO util_curso (id_utilizador, id_curso, aceite) VALUES ("+id_utilizador+","+id_curso+","+0+")";
                     psSql = conn.prepareStatement(sql);
                     psSql.executeUpdate();
 
                     out.println("<script>window.alert('Muito obrigado!\\\nAguarde até que a sua inscrição seja validada!') ; window.location.href = 'paginaPrincipal.jsp';</script>");
+                }else{
+                    out.println("<script>alert('Não há mais vagas para este curso!'); window.location.href = 'paginaPrincipal.jsp';</script>");
                 }
             }
         }

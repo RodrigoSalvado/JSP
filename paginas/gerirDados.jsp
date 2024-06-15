@@ -46,6 +46,9 @@
         tipo_utilizador = rsSql.getInt("tipo_utilizador");
 
         switch(tipo_utilizador){
+            case 1:
+                cargo = "Cliente";
+                break;
             case 2:
                 cargo= "Aluno";
                 break;
@@ -54,6 +57,9 @@
                 break;
             case 4:
                 cargo= "Administrador";
+                break;
+            case 5:
+                cargo = "Apagado";
                 break;
             default:
                 cargo= "Desconhecido";
@@ -231,29 +237,32 @@ if(utilizador == 1){
                             "    <option></option>"); // Opcao em braco para nao haver um valor pré-definido
 
                 while(rsSql.next()){
-                    if(rsSql.getInt("id") != tipo_utilizador && rsSql.getInt("id")!= 5){ // Exclui o cargo atual do utilizador e APAGADO
+                    if(rsSql.getInt("id") != tipo_utilizador){ // Exclui o cargo atual do utilizador
                         out.println("<option value=\""+rsSql.getInt("id")+"\">"+rsSql.getString("cargo")+"</option>");
                     }
                 }
                 out.println("</select>");
 
 
-                // Vê em que cursos o utilizador não tem nenhuma inscrição
-                sql = "SELECT c.nome, c.id_curso FROM curso c WHERE c.id_curso NOT IN" +
-                        " (SELECT uc.id_curso FROM util_curso uc WHERE uc.id_utilizador = "+utilizadorAlterar+") AND " +
-                        " docente != (SELECT username FROM utilizador WHERE id_utilizador = "+utilizadorAlterar+");";
+                // Os "Clientes" e "Apagados" nao podem inscrever-se em cursos
+                if(tipo_utilizador != 1 && tipo_utilizador != 5){
+                    // Vê em que cursos o utilizador não tem nenhuma inscrição
+                    sql = "SELECT c.nome, c.id_curso FROM curso c WHERE c.id_curso NOT IN" +
+                            " (SELECT uc.id_curso FROM util_curso uc WHERE uc.id_utilizador = "+utilizadorAlterar+") AND " +
+                            " docente != (SELECT username FROM utilizador WHERE id_utilizador = "+utilizadorAlterar+");";
 
-                psSql = conn.prepareStatement(sql);
-                rsSql = psSql.executeQuery();
+                    psSql = conn.prepareStatement(sql);
+                    rsSql = psSql.executeQuery();
 
-                out.println("<br><br>\n" +
-                        "<label>Cursos em que não está inscrito: </label>\n" +
-                        "<br>\n");
+                    out.println("<br><br>\n" +
+                            "<label>Cursos em que não está inscrito: </label>\n" +
+                            "<br>\n");
 
-                while (rsSql.next()) {
-                    String nomeCurso = rsSql.getString("nome");
-                    int id_curso = rsSql.getInt("id_curso");
-                    out.println("<label><input type='checkbox' name='cursos' value='" + id_curso + "'> " + nomeCurso + "</label><br>");
+                    while (rsSql.next()) {
+                        String nomeCurso = rsSql.getString("nome");
+                        int id_curso = rsSql.getInt("id_curso");
+                        out.println("<label><input type='checkbox' name='cursos' value='" + id_curso + "'> " + nomeCurso + "</label><br>");
+                    }
                 }
 
 
