@@ -255,7 +255,8 @@ if(utilizador == 1){
                     rsSql = psSql.executeQuery();
 
                     out.println("<br><br>\n" +
-                            "<label>Cursos em que não está inscrito: </label>\n" +
+                            "<label>Cursos em que não está inscrito: </label><br>\n" +
+                            "<label>(Selecione para inscrever) </label>\n" +
                             "<br>\n");
 
                     while (rsSql.next()) {
