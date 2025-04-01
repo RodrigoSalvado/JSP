@@ -47,6 +47,6 @@ Click Execute to complete the import.
 
 Once everything is set up, you can access the project through your browser at:
 
-http://localhost/Trabalho_PHP
+http://localhost/JSP
 
 If you encounter any issues, ensure that the XAMPP services are running and that the database has been imported correctly! 🚀
